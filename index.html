@@ -1,0 +1,1577 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demande de Geste CO — RMA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--primary:#2563eb;--primary-dark:#1d4ed8;--primary-light:#dbeafe;
+--success:#16a34a;--success-light:#dcfce7;
+--warning:#ea580c;--warning-light:#fff7ed;
+--info:#0891b2;--danger:#dc2626;
+--purple:#7c3aed;--purple-light:#f3e8ff;
+--g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
+--g400:#9ca3af;--g500:#6b7280;--g600:#4b5563;--g700:#374151;--g800:#1f2937;
+--radius:8px;--shadow:0 1px 3px rgba(0,0,0,0.1);--shadow-lg:0 10px 15px -3px rgba(0,0,0,0.1);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f2f5;color:var(--g800);min-height:100vh}
+.gco-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow-lg);position:sticky;top:0;z-index:100}
+.gco-header-left{display:flex;align-items:center;gap:12px}
+.gco-header h1{font-size:16px;font-weight:700}
+.gco-header-user{background:rgba(255,255,255,0.2);padding:5px 12px;border-radius:20px;font-size:13px;font-weight:600}
+.gco-tabs{display:flex;gap:4px;background:rgba(0,0,0,0.15);border-radius:var(--radius);padding:3px}
+.gco-tab{padding:7px 16px;border-radius:6px;border:none;background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:13px;font-weight:600;transition:all 0.2s}
+.gco-tab.active,.gco-tab:hover{background:white;color:var(--primary)}
+.gco-container{max-width:1200px;margin:0 auto;padding:16px}
+.gco-form-card{background:white;border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.gco-form-body{padding:16px}
+.gco-row{display:grid;gap:10px;margin-bottom:10px}
+.gco-row-2{grid-template-columns:1fr 1fr}
+.gco-row-3{grid-template-columns:1fr 1fr 1fr}
+.gco-row-4{grid-template-columns:1fr 1fr 1fr 1fr}
+@media(max-width:768px){.gco-row-2,.gco-row-3,.gco-row-4{grid-template-columns:1fr}}
+@media(min-width:769px) and (max-width:1024px){.gco-row-3,.gco-row-4{grid-template-columns:1fr 1fr}}
+.gco-field label{display:block;font-size:11px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px}
+.gco-input,.gco-select,.gco-textarea{width:100%;padding:8px 10px;border:1px solid var(--g300);border-radius:6px;font-size:13px;color:var(--g800);background:white;transition:all 0.2s;font-family:inherit}
+.gco-input:focus,.gco-select:focus,.gco-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-light)}
+.gco-textarea{resize:vertical;min-height:45px}
+.gco-input-group{position:relative;display:flex;align-items:center}
+.gco-input-group .gco-input{padding-right:36px}
+.gco-suffix{position:absolute;right:10px;font-size:11px;font-weight:600;color:var(--g400);pointer-events:none}
+.gco-section-title{display:flex;align-items:center;gap:8px;margin:14px 0 8px;padding-bottom:6px;border-bottom:2px solid var(--primary-light)}
+.gco-section-title:first-child{margin-top:0}
+.gco-section-num{width:22px;height:22px;background:var(--primary);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.gco-section-title span{font-size:13px;font-weight:600;color:var(--g700)}
+.gco-actions{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--g50);border-top:1px solid var(--g200);flex-wrap:wrap;gap:6px}
+.gco-actions-right{display:flex;gap:6px;flex-wrap:wrap}
+.gco-btn{display:inline-flex;align-items:center;gap:5px;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;font-family:inherit;white-space:nowrap}
+.gco-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.gco-btn-primary{background:var(--primary);color:white}
+.gco-btn-success{background:var(--success);color:white}
+.gco-btn-info{background:var(--info);color:white}
+.gco-btn-warning{background:var(--warning);color:white}
+.gco-btn-outline{background:white;color:var(--g600);border:1px solid var(--g300)}
+.gco-btn-danger{background:var(--danger);color:white}
+.gco-btn-sm{padding:5px 10px;font-size:11px}
+.gco-page{display:none}
+.gco-page.active{display:block}
+.gco-filters{background:white;border-radius:12px;padding:12px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.gco-filters-title{font-size:13px;font-weight:600;margin-bottom:8px;color:var(--g700)}
+.gco-kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+@media(max-width:900px){.gco-kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.gco-kpi-grid{grid-template-columns:1fr}}
+.gco-kpi{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;border:1px solid}
+.gco-kpi-blue{background:var(--primary-light);border-color:#93c5fd}
+.gco-kpi-green{background:var(--success-light);border-color:#86efac}
+.gco-kpi-orange{background:var(--warning-light);border-color:#fed7aa}
+.gco-kpi-purple{background:var(--purple-light);border-color:#c4b5fd}
+.gco-kpi-icon{font-size:28px}
+.gco-kpi-val{font-size:20px;font-weight:800;color:var(--g800)}
+.gco-kpi-label{font-size:11px;color:var(--g500)}
+.gco-rep-panel{background:white;border-radius:10px;padding:12px 16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.gco-rep-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.gco-rep-label{width:120px;font-size:12px;font-weight:500;text-align:right;color:var(--g600)}
+.gco-rep-bar-bg{flex:1;background:var(--g200);border-radius:10px;height:18px;overflow:hidden}
+.gco-rep-bar{height:100%;border-radius:10px;transition:width 0.6s}
+.gco-rep-pct{width:60px;font-size:11px;font-weight:700;color:var(--g600)}
+.gco-table-wrap{background:white;border-radius:10px;overflow-x:auto;box-shadow:var(--shadow)}
+.gco-table{width:100%;border-collapse:collapse;font-size:12px}
+.gco-table th{padding:8px 10px;text-align:left;font-weight:600;color:var(--g500);font-size:10px;text-transform:uppercase;background:var(--g100);border-bottom:2px solid var(--g200);white-space:nowrap}
+.gco-table td{padding:7px 10px;border-bottom:1px solid var(--g100);color:var(--g700)}
+.gco-table tbody tr:hover{background:var(--primary-light)}
+.gco-empty{text-align:center;padding:30px;color:var(--g400)}
+.gco-pag{display:flex;align-items:center;justify-content:center;gap:4px;margin-top:12px}
+.gco-pag-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--g300);background:white;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.gco-pag-btn.active{background:var(--primary);color:white;border-color:var(--primary)}
+.gco-pag-btn:disabled{opacity:0.3;cursor:not-allowed}
+.gco-toast{position:fixed;bottom:20px;right:20px;z-index:9999;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:600;color:white;display:none;box-shadow:var(--shadow-lg);animation:slideUp 0.3s}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.gco-toast-success{background:var(--success)}
+.gco-toast-error{background:var(--danger)}
+.gco-toast-info{background:var(--primary)}
+</style>
+</head>
+<body>
+
+<div class="gco-header">
+    <div class="gco-header-left">
+        <h1>📄 Demande de Geste CO</h1>
+        <div class="gco-header-user" id="headerUser">—</div>
+        <button onclick="window.close()" style="background:rgba(255,255,255,0.2);border:none;color:white;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">← Retour Portail</button>
+    </div>
+    <div class="gco-tabs">
+        <button class="gco-tab active" onclick="switchPage('form',this)">📝 Saisie</button>
+        <button class="gco-tab" onclick="switchPage('stats',this)">📊 Recherche & Stats</button>
+    </div>
+</div>
+
+<div class="gco-container">
+<div class="gco-page active" id="pageForm">
+<div class="gco-form-card">
+<div class="gco-form-body">
+    <form id="formGCO" autocomplete="off">
+    <input type="hidden" id="gco_id">
+
+    <div class="gco-section-title">
+        <div class="gco-section-num">1</div>
+        <span>Intermédiaire & Client</span>
+    </div>
+    <div class="gco-row gco-row-2">
+        <div class="gco-field">
+            <label>Code & Nom Intermédiaire</label>
+            <input type="text" id="gco_intermediaire" class="gco-input" list="dlIntermed" placeholder="🔍 Taper code ou nom...">
+            <datalist id="dlIntermed"></datalist>
+        </div>
+        <div class="gco-field">
+            <label>Client / Assuré</label>
+            <input type="text" id="gco_client" class="gco-input" placeholder="Nom du client ou assuré">
+        </div>
+    </div>
+
+    <div class="gco-section-title">
+        <div class="gco-section-num">2</div>
+        <span>Contrat</span>
+    </div>
+    <div class="gco-row gco-row-4">
+        <div class="gco-field">
+            <label>Type de couverture</label>
+            <select id="gco_couverture" class="gco-select">
+                <option value="">—</option>
+                <option>Mono</option>
+                <option>Flotte</option>
+                <option>Entreprise</option>
+            </select>
+        </div>
+        <div class="gco-field">
+            <label>N° Immatriculation</label>
+            <input type="text" id="gco_immat" class="gco-input" placeholder="Ex: 12345-A-67">
+        </div>
+        <div class="gco-field">
+            <label>N° de Contrat</label>
+            <input type="text" id="gco_contrat" class="gco-input" placeholder="N° contrat">
+        </div>
+        <div class="gco-field">
+            <label>N° Immatriculation WW</label>
+            <input type="text" id="gco_immat_ww" class="gco-input" placeholder="WW-XXXXX">
+        </div>
+    </div>
+    <div class="gco-row gco-row-2">
+        <div class="gco-field">
+            <label>Formule d'Assistance</label>
+            <input type="text" id="gco_formule" class="gco-input" list="dlFormules" placeholder="Taper ou choisir...">
+            <datalist id="dlFormules"></datalist>
+        </div>
+        <div class="gco-field">
+            <label>Prestation objet du Geste CO</label>
+            <select id="gco_prestation" class="gco-select">
+                <option value="">—</option>
+                <option>Remorquage</option>
+                <option>CONSTAT</option>
+                <option>VHR</option>
+                <option>REMBOURSEMENT</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="gco-section-title">
+        <div class="gco-section-num">3</div>
+        <span>Détails & Date</span>
+    </div>
+    <div class="gco-row gco-row-2">
+        <div class="gco-field">
+            <label>Détail de la demande</label>
+            <textarea id="gco_detail" class="gco-textarea" rows="2" placeholder="Plafond, KM, Durée ; pour VHR indiquer CAT..."></textarea>
+        </div>
+        <div class="gco-field">
+            <label>Autres spécificités</label>
+            <textarea id="gco_autres" class="gco-textarea" rows="2" placeholder="Informations complémentaires..."></textarea>
+        </div>
+    </div>
+    <div class="gco-row gco-row-4">
+        <div class="gco-field">
+            <label>Date souhaitée (JJ/MM/AAAA)</label>
+            <input type="text" id="gco_date" class="gco-input" placeholder="JJ/MM/AAAA" maxlength="10">
+        </div>
+        <div class="gco-field">
+            <label>Nature du geste CO</label>
+            <select id="gco_nature" class="gco-select">
+                <option value="">—</option>
+                <option>RMA</option>
+                <option>RMAA</option>
+            </select>
+        </div>
+        <div class="gco-field">
+            <label>Coût Geste CO</label>
+            <div class="gco-input-group">
+                <input type="number" id="gco_cout" class="gco-input" placeholder="0.00" step="0.01" min="0">
+                <span class="gco-suffix">DH</span>
+            </div>
+        </div>
+        <div class="gco-field">
+            <label>CA réalisé</label>
+            <div class="gco-input-group">
+                <input type="number" id="gco_ca" class="gco-input" placeholder="0.00" step="0.01" min="0">
+                <span class="gco-suffix">DH</span>
+            </div>
+        </div>
+    </div>
+    <div class="gco-row gco-row-4">
+        <div class="gco-field">
+            <label>Taux d'Équipement</label>
+            <div class="gco-input-group">
+                <input type="number" id="gco_taux" class="gco-input" placeholder="0" step="0.1" min="0" max="100">
+                <span class="gco-suffix">%</span>
+            </div>
+        </div>
+        <div class="gco-field"></div>
+        <div class="gco-field"></div>
+        <div class="gco-field"></div>
+    </div>
+    </form>
+</div>
+
+<div class="gco-actions">
+    <button type="button" class="gco-btn gco-btn-outline" onclick="resetForm()">🔄 Réinitialiser</button>
+    <div class="gco-actions-right">
+        <button type="button" class="gco-btn gco-btn-success" onclick="saveDemande()">💾 Enregistrer</button>
+        <button type="button" class="gco-btn gco-btn-info" onclick="downloadPDF()">📥 PDF</button>
+        <button type="button" class="gco-btn gco-btn-warning" onclick="downloadExcel()">📥 Excel</button>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="gco-page" id="pageStats">
+<div class="gco-filters">
+    <div class="gco-filters-title">🔍 Filtres de recherche</div>
+    <div class="gco-row gco-row-4">
+        <div class="gco-field">
+            <label>Code Intermédiaire</label>
+            <input type="text" id="sf_intermed" class="gco-input" placeholder="Rechercher...">
+        </div>
+        <div class="gco-field">
+            <label>Date début</label>
+            <input type="text" id="sf_date1" class="gco-input" placeholder="JJ/MM/AAAA" maxlength="10">
+        </div>
+        <div class="gco-field">
+            <label>Date fin</label>
+            <input type="text" id="sf_date2" class="gco-input" placeholder="JJ/MM/AAAA" maxlength="10">
+        </div>
+        <div class="gco-field">
+            <label>Couverture</label>
+            <select id="sf_couv" class="gco-select">
+                <option value="">Tous</option>
+                <option>Mono</option>
+                <option>Flotte</option>
+                <option>Entreprise</option>
+            </select>
+        </div>
+    </div>
+    <div class="gco-row gco-row-4">
+        <div class="gco-field">
+            <label>Nature</label>
+            <select id="sf_nature" class="gco-select">
+                <option value="">Tous</option>
+                <option>RMA</option>
+                <option>RMAA</option>
+            </select>
+        </div>
+        <div class="gco-field">
+            <label>Prestation</label>
+            <select id="sf_prest" class="gco-select">
+                <option value="">Toutes</option>
+                <option>Remorquage</option>
+                <option>CONSTAT</option>
+                <option>VHR</option>
+                <option>REMBOURSEMENT</option>
+            </select>
+        </div>
+        <div class="gco-field">
+            <label>Commercial</label>
+            <select id="sf_commercial" class="gco-select">
+                <option value="">Tous</option>
+                <option>AYOUB</option>
+                <option>ISMAIL</option>
+                <option>ISSAM</option>
+                <option>HICHAM</option>
+            </select>
+        </div>
+        <div class="gco-field" style="display:flex;align-items:flex-end;gap:6px;">
+            <button class="gco-btn gco-btn-primary" onclick="doSearch()">🔍 Rechercher</button>
+            <button class="gco-btn gco-btn-outline" onclick="resetSearch()">↺</button>
+        </div>
+    </div>
+</div>
+
+<div class="gco-kpi-grid">
+    <div class="gco-kpi gco-kpi-blue"><div class="gco-kpi-icon">📋</div><div><div class="gco-kpi-val" id="kTotal">0</div><div class="gco-kpi-label">Total Gestes CO</div></div></div>
+    <div class="gco-kpi gco-kpi-green"><div class="gco-kpi-icon">💰</div><div><div class="gco-kpi-val" id="kCA">0 DH</div><div class="gco-kpi-label">CA Total</div></div></div>
+    <div class="gco-kpi gco-kpi-orange"><div class="gco-kpi-icon">📊</div><div><div class="gco-kpi-val" id="kCout">0 DH</div><div class="gco-kpi-label">Coût Moyen</div></div></div>
+    <div class="gco-kpi gco-kpi-purple"><div class="gco-kpi-icon">🏆</div><div><div class="gco-kpi-val" id="kTop">—</div><div class="gco-kpi-label">Prestation dominante</div></div></div>
+</div>
+
+<div class="gco-rep-panel" id="repPanel" style="display:none;">
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px;">Répartition par prestation</div>
+    <div id="repBars"></div>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
+    <div style="font-size:14px;font-weight:600;" id="resTitle">Résultats</div>
+    <div style="display:flex;gap:6px;">
+        <button class="gco-btn gco-btn-info gco-btn-sm" onclick="exportResPDF()">📥 PDF</button>
+        <button class="gco-btn gco-btn-warning gco-btn-sm" onclick="exportResExcel()">📥 Excel</button>
+    </div>
+</div>
+<div class="gco-table-wrap">
+    <table class="gco-table">
+        <thead><tr>
+            <th>Date</th><th>Intermédiaire</th><th>Client</th><th>Couverture</th>
+            <th>Prestation</th><th>Nature</th><th>Coût</th><th>CA</th><th>Taux</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="resBody"><tr><td colspan="10" class="gco-empty">Lancez une recherche</td></tr></tbody>
+    </table>
+</div>
+<div class="gco-pag" id="resPag"></div>
+</div>
+</div>
+
+<div class="gco-toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// ============================================================
+// RESEAU COMPLET — 728 LIGNES
+// ============================================================
+const RESEAU_COMPLET = [
+{code:"1409",nom:"ASSURANCES BENDOURO",reseau:"COURTAGE",ville:"MEKNES",commercial:"ISMAIL"},
+{code:"1420",nom:"RISK-MAN ASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1850",nom:"S.A.D.A.S",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1435",nom:"LOYAL ASSURANCE",reseau:"COURTAGE",ville:"KENITRA",commercial:"ISMAIL"},
+{code:"1510",nom:"BCS",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1423",nom:"ODDO ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1516",nom:"SCASCO KENITRA",reseau:"COURTAGE",ville:"KENITRA",commercial:"ISMAIL"},
+{code:"1642",nom:"AGMA - LAHLOU TAZI",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1418",nom:"2 B ASSUR",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1343",nom:"BRIDGE ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1526",nom:"ASSURAMA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1548",nom:"AFMA CASA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1620",nom:"GRAS SAVOYE MAROC",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1312",nom:"ASSURANCES MOHAMED V",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1547",nom:"Cabinet d'assurances LAFIA",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1399",nom:"GOLDEN ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1410",nom:"CPC ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1441",nom:"POLYASSURANCES",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1453",nom:"EPEGA CENTRE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1480",nom:"GRLC ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1378",nom:"SNTL ASSURANCES (COURTAGE)",reseau:"SNTL",ville:"RABAT",commercial:"HICHAM"},
+{code:"1448",nom:"ASSURANCES MALLAHI",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1914",nom:"R.A.M.A.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1385",nom:"OPTIMUM ASSUREURS CONSEILS",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1460",nom:"ASSURANCES ZBIRAT",reseau:"COURTAGE",ville:"SALE",commercial:"ISMAIL"},
+{code:"1854",nom:"LOUNJA (ASSURANCES)",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1356",nom:"LOFT ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1363",nom:"MILLENIUM ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1461",nom:"VOTRE ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1822",nom:"C A M",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1324",nom:"PERFORMANCE ASSURANCES S.A.R.L.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1812",nom:"B.A.S.C.O.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1325",nom:"ASWAR ASSURANCES SARL",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1834",nom:"C E M A S S U R.",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1997",nom:"GESTION ETUDES MAROCAINES D'ASSURANCES GEMA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1381",nom:"CABINET SOLUTIONS ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1428",nom:"MED ASSURANCE SARL",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1503",nom:"ARENOR",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1475",nom:"ARTAI GLOBAL ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1392",nom:"GLOBASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1495",nom:"AGMA TANGER",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1518",nom:"LYOUBI",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1830",nom:"AFRIC EUROPE ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1313",nom:"ASSURLAND SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1310",nom:"COURTASSUR",reseau:"COURTAGE",ville:"MEKNES",commercial:"ISMAIL"},
+{code:"1556",nom:"SGDA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1553",nom:"AFRICAN REINSURANCE BROKERS",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1474",nom:"INJAD ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1338",nom:"ASSURANCES ARRIDA",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1515",nom:"ASSURMAX",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1374",nom:"PGA ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1527",nom:"NAFORA ASSURANCES",reseau:"COURTAGE",ville:"KENITRA",commercial:"ISMAIL"},
+{code:"1442",nom:"GRAS SAVOYE FES SARL",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1364",nom:"LA MAROCAINE D'INTERMEDIATION EN ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1350",nom:"C4 ASSUREUR CONSEIL (C4AC)",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1832",nom:"C.G.A.P.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1709",nom:"MAGHREBIENNE DE COURTAGE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1525",nom:"SPRING ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"4085",nom:"S G D A",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1549",nom:"MARSKY ASSURANCES BROKERS",reseau:"COURTAGE",ville:"AGADIR",commercial:"AYOUB"},
+{code:"1405",nom:"ASSURANCES L'HORIZON",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1494",nom:"AGMA MARRAKECH",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1369",nom:"SAMSARA ASSURANCES",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1333",nom:"AGECAP - SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1406",nom:"ASSURANCES BEKKAOUI SARL",reseau:"COURTAGE",ville:"BERKANE",commercial:"ISMAIL"},
+{code:"1827",nom:"A.G.E.C.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1964",nom:"AON ACORE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"7479",nom:"BGD VF BENI MELLAL",reseau:"SNTL",ville:"BENI MELLAL",commercial:"HICHAM"},
+{code:"1331",nom:"SOCIETE DAR TAWFIR ASSURANCES SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1996",nom:"CABINET AFMA TANGER",reseau:"COURTAGE",ville:"TANGER",commercial:"AYOUB"},
+{code:"1383",nom:"FOCUS ASSURANCES SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"3026",nom:"ASSURANCES A.F.G",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1863",nom:"G.T.A.M.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1388",nom:"ZALASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"7469",nom:"BGD VF MEKNES",reseau:"SNTL",ville:"MEKNES",commercial:"HICHAM"},
+{code:"1457",nom:"BAYASSUR SARL",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1963",nom:"ALPHA ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1488",nom:"ASSURANCES SAADANE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"7465",nom:"BGD VF MARRAKECH",reseau:"SNTL",ville:"MARRAKECH",commercial:"HICHAM"},
+{code:"1352",nom:"AFMA FES",reseau:"COURTAGE",ville:"FES",commercial:"AYOUB"},
+{code:"1424",nom:"ASSURANCES ZIRAOUI S.A.R.L",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1533",nom:"ASSURANCES MECHATTE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1809",nom:"CAGEM MAROC",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1528",nom:"ASSURANCE GENERATION FUTURE",reseau:"COURTAGE",ville:"DEROUA",commercial:"AYOUB"},
+{code:"1432",nom:"ASSURANCES AL JIHA",reseau:"COURTAGE",ville:"MOHAMMEDIA",commercial:"AYOUB"},
+{code:"1530",nom:"FETOUAKI ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1393",nom:"GRAS SAVOYE RABAT",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1462",nom:"ALB COURTAGE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1831",nom:"C.A.D.A.I.C.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1773",nom:"BEDRAOUI ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1323",nom:"EPEGA RABAT",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"7470",nom:"BGD VF CASABLANCA",reseau:"SNTL",ville:"CASABLANCA",commercial:"HICHAM"},
+{code:"3027",nom:"ASSURANCES LA GAZELLE",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1329",nom:"SOCIETE DE COURTAGE D'ASSURANCES 2Z",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1521",nom:"ASSURANCES FDALA CONSEIL SARL",reseau:"COURTAGE",ville:"MOHAMMEDIA",commercial:"ISMAIL"},
+{code:"1514",nom:"AYDI ASSURANCES SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"7463",nom:"BGD VF FES",reseau:"SNTL",ville:"FES",commercial:"HICHAM"},
+{code:"1361",nom:"MEHDI ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1365",nom:"PREMIUM ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1814",nom:"A.C.I.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1334",nom:"ASSURANCES NAZIH",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1371",nom:"DEAL ASSURANCES SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1517",nom:"CYTASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1512",nom:"AXIS INSURANCE GROUP",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1377",nom:"FILASSURE SARL",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1511",nom:"APRIL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1545",nom:"HIVERNAGE ASSURANCE",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1468",nom:"MMH ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1983",nom:"ARBEA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1341",nom:"AFRICAN REINSURANCE BROKERS",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1431",nom:"OVERALL ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1529",nom:"FIRAM ASSURANCES",reseau:"COURTAGE",ville:"SKHIRATE",commercial:"ISMAIL"},
+{code:"1440",nom:"ASSURANCES TADLA AZILAL S.A.R.L",reseau:"COURTAGE",ville:"BENI MELLAL",commercial:"AYOUB"},
+{code:"1799",nom:"AD-DAMANE (DECENTRALISATION)",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1504",nom:"BELKAHIA ET FILS",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1451",nom:"FIDELIA ASSURANCE",reseau:"COURTAGE",ville:"OUJDA",commercial:"AYOUB"},
+{code:"1421",nom:"ASSURANCE ABDESSAMAD SABAH SARL",reseau:"COURTAGE",ville:"OURIKA",commercial:"AYOUB"},
+{code:"1326",nom:"GRAS SAVOYE TANGER",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1436",nom:"IHSSANE ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1340",nom:"POLASSUR SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1618",nom:"ALLIANCE INTERNATIONALE D'ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1933",nom:"U.N.A.P. (DECENTRALISATION)",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1387",nom:"FEMAS ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1507",nom:"SAFE ASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1354",nom:"VIVASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1493",nom:"AGMA RABAT",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1544",nom:"PRIMO ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1327",nom:"ASSURANCES AL HIMMA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1523",nom:"SURE ASSURE",reseau:"COURTAGE",ville:"AGADIR",commercial:"AYOUB"},
+{code:"1919",nom:"AFMA FES",reseau:"COURTAGE",ville:"FES",commercial:"AYOUB"},
+{code:"1411",nom:"DAFALI ASSURANCE ET FILS",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"2710",nom:"ASSURANCES VIDAL",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1416",nom:"SGDA LA CORNICHE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1408",nom:"BACHASSUR",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"7460",nom:"BGD VF OUJDA",reseau:"SNTL",ville:"OUJDA",commercial:"HICHAM"},
+{code:"1761",nom:"B E L A S S U R",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1397",nom:"EPEGA MARRAKECH",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1500",nom:"NAIM",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"3281",nom:"VIDAL CASA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1376",nom:"AGL ASSUREUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1370",nom:"ICORAL ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1427",nom:"ASSURANCES LYAZIDI CASABLANCA",reseau:"LYAZIDI",ville:"CASABLANCA",commercial:"HICHAM"},
+{code:"1668",nom:"A F M A",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1452",nom:"ASSURANCES TRANSASSUR",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1464",nom:"COOGEFAS",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1319",nom:"AL KHIBRA ASSURANCES SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1478",nom:"ASSURWI",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1476",nom:"ASSURANCES AL MAGHREB AL KABIR SARL",reseau:"COURTAGE",ville:"MOHAMMEDIA",commercial:"ISMAIL"},
+{code:"1531",nom:"RAPIDE ASSURANCE",reseau:"COURTAGE",ville:"TEMARA",commercial:"ISMAIL"},
+{code:"1358",nom:"ASSURANCES BETASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"2010",nom:"ASSURANCES AIDASSUR SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1513",nom:'CGA ASSURANCES "PGA MARRAKECH"',reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1414",nom:"FI LAMANE ASSURANCES",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1379",nom:"AYLIS INSURANCE GROUP (AIG)",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1419",nom:"ASSURANCES MOSTAINE S.A.R.L",reseau:"COURTAGE",ville:"EL JADIDA",commercial:"AYOUB"},
+{code:"1952",nom:'G.M.A "AFMA AGADIR"',reseau:"COURTAGE",ville:"AGADIR",commercial:"AYOUB"},
+{code:"1306",nom:"FINASSUR SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1912",nom:"U.G.P.A.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1404",nom:"ISSARASSUR",reseau:"COURTAGE",ville:"AGADIR",commercial:"AYOUB"},
+{code:"1433",nom:"ASSURANCES EL KHALFI",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1857",nom:"T.E.G.A.M.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1554",nom:"MAAMOURA ASSURANCE",reseau:"COURTAGE",ville:"SIDI ALLAL EL BAHRAOUI",commercial:"ISMAIL"},
+{code:"1417",nom:'AMC ASSURANCES "ASSURIA"',reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1395",nom:"ELLE ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1347",nom:"ZAKASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1330",nom:"LA CONTINENTALE D'ASSURANCES ET DE COURTAGE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1463",nom:"ASSURANCES & CONSEILS BAROUTI ASCOBA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1782",nom:"C.T.C.A.",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1426",nom:"ASSURANCE LA COLLINE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1537",nom:"LA MAROCAINE DE COURTAGE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1532",nom:"LIBERASSUR",reseau:"COURTAGE",ville:"EL JADIDA",commercial:"AYOUB"},
+{code:"1401",nom:"MUSTAPHA ATTAMINAT",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1550",nom:"CAPITALYSE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1425",nom:"AFMA OUJDA",reseau:"COURTAGE",ville:"OUJDA",commercial:"AYOUB"},
+{code:"1382",nom:"OBJECTIF ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1712",nom:"ASSURIANA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1380",nom:"PROGRESSIVE ASSURANCE GENERAL (PAG)",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1391",nom:"GPA",reseau:"COURTAGE",ville:"MOHAMMEDIA",commercial:"ISMAIL"},
+{code:"5991",nom:"SNTL ASSURANCES SA RABAT",reseau:"SNTL",ville:"RABAT",commercial:"HICHAM"},
+{code:"7475",nom:"BGD VF EL JADIDA",reseau:"SNTL",ville:"EL JADIDA",commercial:"HICHAM"},
+{code:"1552",nom:"Assurance BENLAMINE SARL",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1536",nom:"UNAM- UNION DES ASSURANCES MODERNES",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1384",nom:"PREMIUM COURTAGE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1444",nom:"GLOBAL DE COURTAGE SARL",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1539",nom:"SANG NEUF ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1413",nom:"AL MAGHRIBIA LI ATTAEMINE",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1951",nom:"STE DE COURTAGE D'ASSURANCES EL ARABI",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1506",nom:"B2M",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1353",nom:"SIGMA ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1445",nom:"LES ASSURANCES ALTERNATIVES",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1988",nom:"CABCO",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1976",nom:"ASSURANCES MERNISSI & CIE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"3044",nom:"ASSURANCES HEFIRI",reseau:"COURTAGE",ville:"KHOURIBGA",commercial:"AYOUB"},
+{code:"1337",nom:"SOGEASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1601",nom:"ASSURANCES EPEGA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"7468",nom:"BGD VF TETOUAN",reseau:"SNTL",ville:"TETOUAN",commercial:"HICHAM"},
+{code:"1335",nom:"EPEGA AGADIR SARL",reseau:"COURTAGE",ville:"AGADIR",commercial:"AYOUB"},
+{code:"1389",nom:"AFMA RABAT",reseau:"COURTAGE",ville:"RABAT",commercial:"AYOUB"},
+{code:"1443",nom:"GRAS SAVOYE MARRAKECH SARL",reseau:"COURTAGE",ville:"MARRAKECH",commercial:"AYOUB"},
+{code:"1314",nom:"MARFOUK ASSURANCES SARL",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1499",nom:"SKY GROUPE ASSURANCES RABAT",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1449",nom:"ASSURANCE BADDOUCH SARL",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1455",nom:"BBF ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1430",nom:"ABEMA ASSURANCES",reseau:"COURTAGE",ville:"RABAT",commercial:"ISMAIL"},
+{code:"1683",nom:"B.E.R.A. (CABINET)",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1351",nom:"ASSURANCES MCCA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1479",nom:"PREVAXE ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1508",nom:"KENASSUR",reseau:"COURTAGE",ville:"KENITRA",commercial:"ISMAIL"},
+{code:"1344",nom:"ASSURANCES DEFASSUR",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1555",nom:"INSUREMA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1355",nom:"ASSURANCE ELINQAD",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"7472",nom:"BGD VF LAAYOUNE",reseau:"SNTL",ville:"LAAYOUNE",commercial:"HICHAM"},
+{code:"3036",nom:"SONAG",reseau:"COURTAGE",ville:"KENITRA",commercial:"ISMAIL"},
+{code:"1322",nom:"EPEGA TANGER",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"1852",nom:"SAMIA ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"7461",nom:"BGD VF TANGER",reseau:"SNTL",ville:"TANGER",commercial:"HICHAM"},
+{code:"1498",nom:"AFMA KENITRA",reseau:"COURTAGE",ville:"KENITRA",commercial:"AYOUB"},
+{code:"7467",nom:"BGD VF KENITRA",reseau:"SNTL",ville:"KENITRA",commercial:"HICHAM"},
+{code:"1534",nom:"ABRAR ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"5834",nom:"ASSURANCE AL MOUSSANADA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1838",nom:"H A L ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"6653",nom:"EL BOUHTOURI BAB DOUKALA ASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6656",nom:"ASSURANCES NOUVELLES DE RABAT",reseau:"RMA AGENTS",ville:"TEMSIA",commercial:"ISSAM"},
+{code:"6661",nom:"DIFAF ASSURANCE",reseau:"RMA AGENTS",ville:"INEZGANE",commercial:"ISSAM"},
+{code:"6650",nom:"ASSURANCES YASSER",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"6658",nom:"Assurances Mohamed Zaroili SARL",reseau:"RMA AGENTS",ville:"DRIOUCH",commercial:"ISSAM"},
+{code:"6655",nom:"ASSURANCES AIT MELLOUL",reseau:"RMA AGENTS",ville:"AIT MELLOUL",commercial:"ISSAM"},
+{code:"6446",nom:"BOUDISS ASSURANCE ET CONSEIL SARL*",reseau:"RMA AGENTS",ville:"BOUZNIKA",commercial:"ISSAM"},
+{code:"6651",nom:"ASSURANCES OULAD FREJ",reseau:"RMA AGENTS",ville:"EL JADIDA",commercial:"ISSAM"},
+{code:"6654",nom:"DARBISTES ASSURANCES",reseau:"RMA AGENTS",ville:"NOUACEUR – CASABLANCA",commercial:"ISSAM"},
+{code:"6280",nom:"GLOBAL RISK",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6657",nom:"BELBEKKAR ASSURANCES",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"5120",nom:"ASSURANCES EL FADEL",reseau:"RMA AGENTS",ville:"MOHAMMEDIA",commercial:"ISSAM"},
+{code:"5860",nom:"STE. BOUHRIGA ASSURANCES SARL",reseau:"RMA AGENTS",ville:"OULED TEIMA",commercial:"ISSAM"},
+{code:"7925",nom:"SIDI BIBI",reseau:"RMA AGENTS",ville:"SIDI BIBI",commercial:"ISSAM"},
+{code:"7806",nom:"BGD AGADIR AUTO HALL",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"8039",nom:"BGD OURIKA",reseau:"RMA AGENTS",ville:"OURIKA",commercial:"ISSAM"},
+{code:"7481",nom:"BGD VF AGADIR (SNTL)",reseau:"SNTL",ville:"AGADIR",commercial:"HICHAM"},
+{code:"1470",nom:"ASSURANCE INTERMAROC SARL",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6582",nom:"ASSURANCES REDASSUR SARL AU",reseau:"RMA AGENTS",ville:"HAD SOUALEM",commercial:"ISSAM"},
+{code:"7775",nom:"BGD KHEMISSET",reseau:"RMA AGENTS",ville:"KHEMISSET",commercial:"ISSAM"},
+{code:"6562",nom:"ASSURANCE CHOA SARL",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"6621",nom:"NEW ASSURANCE",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7875",nom:"BGD AGADIR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"5920",nom:"RIAD ASSURANCES",reseau:"RMA AGENTS",ville:"TEMARA",commercial:"ISSAM"},
+{code:"7953",nom:"BGD MARRAKECH II",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6635",nom:"YANA SSURANCE",reseau:"RMA AGENTS",ville:"AIN AOUDA/TEMARA",commercial:"ISSAM"},
+{code:"6310",nom:"ASSURANCES LAMOURI S.A.R.L",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6643",nom:"EXCELLIUM ASSURANCE",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"8028",nom:"BGD LOUDAYA",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"5130",nom:"ASMAA ASSALAMA",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6550",nom:"ASSURANCES TIT MELLIL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5846",nom:"ASSURANCES TALLA",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"6250",nom:"ASSURANCES EL MARKAZ",reseau:"RMA AGENTS",ville:"TEMARA",commercial:"ISSAM"},
+{code:"5837",nom:"ASSURANCES GUERRAB",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"6625",nom:"ASSURANCES TALMESTE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5871",nom:"ASSURIS",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6553",nom:"BAHIATIK",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7903",nom:"BGD AGADIR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"7080",nom:"BGD RABAT",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6565",nom:"ECOASSUR SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7987",nom:"BGD TAHANNAOUT",reseau:"RMA AGENTS",ville:"TAHANNAOUT EL HAOUZ",commercial:"ISSAM"},
+{code:"7761",nom:"BGD INZEGANE 2",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6465",nom:"JAADA ET CHBILI SARL",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"6537",nom:"ASSURANCES AL BOUGHAZ SARL",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6528",nom:"TACHAOUINE ASSURANCE SARL AU",reseau:"RMA AGENTS",ville:"AZILAL",commercial:"ISSAM"},
+{code:"6523",nom:"CHAOUI BELMIR ASSURANCES",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"7986",nom:"BGD LQLIAA",reseau:"RMA AGENTS",ville:"LAQLIAA",commercial:"ISSAM"},
+{code:"5876",nom:"ASSURANCE ZAID",reseau:"RMA AGENTS",ville:"KSAR EL KEBIR",commercial:"ISSAM"},
+{code:"6478",nom:"BENYAHYA ASSURANCE",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7862",nom:"BGD SIDI KACEM",reseau:"RMA AGENTS",ville:"SIDI KACEM",commercial:"ISSAM"},
+{code:"6572",nom:"STE NABIL ASSURANCE SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8019",nom:"BGD DAR OULD ZIDOUH",reseau:"RMA AGENTS",ville:"OULD ZIDOUH",commercial:"ISSAM"},
+{code:"6563",nom:"AATIKFILS ASSURANCES SARL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7600",nom:"ORUS ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6459",nom:"ASSURANCES LA SOURCE SARL",reseau:"RMA AGENTS",ville:"TEMARA",commercial:"ISSAM"},
+{code:"7881",nom:"BENBRAHIM ASSURANCES DU SUD SARL",reseau:"RMA AGENTS",ville:"AIT MELLOUL",commercial:"ISSAM"},
+{code:"6611",nom:"SECURI ASSUR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"8013",nom:"BGD BELFAA",reseau:"RMA AGENTS",ville:"BELFAA",commercial:"ISSAM"},
+{code:"4405",nom:"ALIA ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6595",nom:"MOHAMED EL AMMARI ASSURANCE",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"6514",nom:"TOUTASSUR SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7860",nom:"BGD BEN TAIEB",reseau:"RMA AGENTS",ville:"BEN TAIB-DRIOUCH",commercial:"ISSAM"},
+{code:"6441",nom:"VECTEUR ASSURANCE SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6484",nom:"ASSURANCE OUEDZA TAOURIRT",reseau:"RMA AGENTS",ville:"TAOURIRT",commercial:"ISSAM"},
+{code:"6532",nom:"ASSURANCES AL MAARIFA SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7773",nom:"BGD LALLA YAKOUT",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"4309",nom:"BMCE ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8014",nom:"BGD MOHAMMEDIA",reseau:"RMA AGENTS",ville:"MOHAMMEDIA",commercial:"ISSAM"},
+{code:"6445",nom:"ASSURANCE IFRY",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7871",nom:"EL GHAZAOUATE ASSURANCES",reseau:"RMA AGENTS",ville:"BOUMIA",commercial:"ISSAM"},
+{code:"6498",nom:"ASSURANCES ANOUAL SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8049",nom:"BGD CASA AIN SBAA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8005",nom:"BGD CHICHAOUA",reseau:"RMA AGENTS",ville:"CHICHAOUA",commercial:"ISSAM"},
+{code:"6591",nom:"AZZOUBIRE ASSURANCE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7988",nom:"BGD BERKANE",reseau:"RMA AGENTS",ville:"BERKANE",commercial:"ISSAM"},
+{code:"6442",nom:"REFLEX ASSURANCE",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"7878",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6634",nom:"ASSURANCES RAMI",reseau:"RMA AGENTS",ville:"BENI MELLAL",commercial:"ISSAM"},
+{code:"6598",nom:"BENQLILOU ASSURANCES KENITRA",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"6593",nom:"OLKOM ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5836",nom:"ASSURANCES AVENIR DU SAHARA",reseau:"RMA AGENTS",ville:"LAAYOUNE",commercial:"ISSAM"},
+{code:"1640",nom:"BGD AFFAIRES DU PERSONNEL FINANCECOM",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8026",nom:"BGD AL AIOUN SIDI MELLOUK",reseau:"RMA AGENTS",ville:"EL AÏOUN SIDI MELLOUK",commercial:"ISSAM"},
+{code:"6613",nom:"BOUKHALEF ASSURANCES",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7891",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5868",nom:"EZZAHRA ASSURANCES",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"4420",nom:"HAJJI YOUSSEF ASSURANCE SARL*",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6529",nom:"INTEGRITE ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8008",nom:"BGD ZAIDA",reseau:"RMA AGENTS",ville:"ZAIDA",commercial:"ISSAM"},
+{code:"7864",nom:"BUREAU GESTION DIRECTE RMA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6444",nom:"ERRAFAY ASSURANCE CONSEIL",reseau:"RMA AGENTS",ville:"KALAA DES SRAGHNA",commercial:"ISSAM"},
+{code:"6260",nom:"ASSURANCES ES-SAADI",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6623",nom:"ASSURANCE BOUHMAD",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6609",nom:"EL AZZOUZIA ASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"8011",nom:"BGD BRADIA",reseau:"RMA AGENTS",ville:"BRADIA",commercial:"ISSAM"},
+{code:"7010",nom:"B.G.D. AFFAIRES DU PERSONNEL AL WATANIYA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7977",nom:"BGD AMIZMIZ",reseau:"RMA AGENTS",ville:"AMIZMIZ",commercial:"ISSAM"},
+{code:"6170",nom:"ASSURANCES BENABDELLAH",reseau:"RMA AGENTS",ville:"SIDI SLIMANE",commercial:"ISSAM"},
+{code:"6568",nom:"CABINET HICHAM BENKIRANE ASSUR SARL",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6510",nom:"ASSURANCE NEKOR SARL",reseau:"RMA AGENTS",ville:"AL HOUCEIMA",commercial:"ISSAM"},
+{code:"6646",nom:"ASSURANCES ZAERS S.A.R.L",reseau:"RMA AGENTS",ville:"SIDI YAHIA ZAIRE",commercial:"ISSAM"},
+{code:"7949",nom:"BGD AUTO HALL RABAT",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"1520",nom:"BMF ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6592",nom:"STE ASSURANCES ZAAF",reseau:"RMA AGENTS",ville:"BERKANE",commercial:"ISSAM"},
+{code:"5270",nom:"ASSURANCES FAIZ",reseau:"RMA AGENTS",ville:"TEMARA",commercial:"ISSAM"},
+{code:"6522",nom:"STE SIDRA ASSURANCE SARL",reseau:"RMA AGENTS",ville:"GUERCIF",commercial:"ISSAM"},
+{code:"5861",nom:"RENOVASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6474",nom:"STE CABINET HICHAME BENKIRANE ASSUR RABAT",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6471",nom:"ASSURANCES SAADANE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7787",nom:"BGD MARRAKECH HIVERNAGE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"5960",nom:"ESPACE D'ASSURANCE CONSEIL BOUHNIK",reseau:"RMA AGENTS",ville:"BENI MELLAL",commercial:"ISSAM"},
+{code:"8040",nom:"BGD AGADIR TIKIOUINE",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6622",nom:"ASSURANCES EZ-ZEGHARI",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"8051",nom:"BGD TAN-TAN",reseau:"RMA AGENTS",ville:"TANTAN",commercial:"ISSAM"},
+{code:"4409",nom:"ASSURANCES EL BAHIA",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"8027",nom:"BGD SIDI BOUKNADEL",reseau:"RMA AGENTS",ville:"SIDI BOUKNADEL",commercial:"ISSAM"},
+{code:"6449",nom:"BELLA ASSURANCES",reseau:"RMA AGENTS",ville:"TAZA",commercial:"ISSAM"},
+{code:"5874",nom:"ASSURANCES ENERGIC CONSEIL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6467",nom:"NOUR EZZAHRAA SARL",reseau:"RMA AGENTS",ville:"BERRECHID",commercial:"ISSAM"},
+{code:"6536",nom:"DYNAMIC ASSURANCES SARL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"5833",nom:"ARZ ASSUREUR CONSEIL",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6631",nom:"EXCELLANCE ASSURANCES FES",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6606",nom:"MEZ ASSURANCES SARL AU",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6475",nom:"MEZ ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6627",nom:"CONECTE ASSURANCE",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6548",nom:"LAKHMIRI ASSURANCES SARL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6472",nom:"ECHAKROUNI ASSURANCES SARL",reseau:"RMA AGENTS",ville:"ZAGORA",commercial:"ISSAM"},
+{code:"7907",nom:"ALIA ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6499",nom:"ASSURANCES TAFILALT",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"5160",nom:"RASSURA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6540",nom:"ASSURANCES MARZOUKI SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6534",nom:"FARISSI ASSURANCES SARL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7922",nom:"BGD AFFAIRES DU PERSONNEL FILIALES RMA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7819",nom:"BGD SIDI HARAL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7978",nom:"BGD AIT AMIRA",reseau:"RMA AGENTS",ville:"AIT AMIRA",commercial:"ISSAM"},
+{code:"7820",nom:"BGD FQUIH BEN SALEH",reseau:"RMA AGENTS",ville:"FQUIH BEN SALEH",commercial:"ISSAM"},
+{code:"9998",nom:"HBS ASSURANCE",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7900",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5260",nom:"ASSURANCES MAHRAZ",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6599",nom:"ASSURANCES ANOUAL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7783",nom:"BGD LA CORNICHE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7884",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6477",nom:"ASSURANCES NOUVELLES GENERATIONS SARL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6519",nom:"ASSURANCES ZOUHAIR SARL",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"6574",nom:"STE DAIZ ASSURANCE",reseau:"RMA AGENTS",ville:"BEJAAD",commercial:"ISSAM"},
+{code:"7892",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6448",nom:"ASSURANCES AL CHAMAL SARL",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"6543",nom:"EMERGEASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6564",nom:"AL FAYCAL ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7917",nom:"BGD BOUCIF",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5910",nom:"ASSURANCES TATOUTI",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6455",nom:"ASSURANCES SOUFIANE SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8029",nom:"BGD EL BOROUJ",reseau:"RMA AGENTS",ville:"EL BOROUJ",commercial:"ISSAM"},
+{code:"7865",nom:"BGD S G D A",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8010",nom:"BGD DRARGA",reseau:"RMA AGENTS",ville:"GRARGA",commercial:"ISSAM"},
+{code:"7887",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7415",nom:"BGD SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7906",nom:"BGD RM A.H",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6210",nom:"ASSURANCES BOUANAN",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6616",nom:"ASSURANCE AL MOUSSAHABA",reseau:"RMA AGENTS",ville:"SETTAT",commercial:"ISSAM"},
+{code:"7944",nom:"BGD RABAT MABELLA",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6410",nom:"GALAXY ASSURANCES",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7803",nom:"BGD Ras El Ma",reseau:"RMA AGENTS",ville:"BGD RAS EL MA",commercial:"ISSAM"},
+{code:"5878",nom:"ASSURANCE CHARIBA SARL",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"6486",nom:"ASSURANCE EL FAZAZI",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8016",nom:"BGD BOUGUEDRA",reseau:"RMA AGENTS",ville:"BOUGUEDRA",commercial:"ISSAM"},
+{code:"7867",nom:"MAYAR ASSURANCES SARL",reseau:"RMA AGENTS",ville:"DCHEIRA",commercial:"ISSAM"},
+{code:"6481",nom:"LE COMPTOIR D'ASSURANCES",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7809",nom:"BGD EL GARA",reseau:"RMA AGENTS",ville:"EL GARA",commercial:"ISSAM"},
+{code:"7923",nom:"BGD RAFFALI",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6641",nom:"ASSURANCE NINI",reseau:"RMA AGENTS",ville:"SOUK LARBAA",commercial:"ISSAM"},
+{code:"6607",nom:"ASSURANCES AL MADAR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7909",nom:"ASSURANCES BENABDALLAH FÉS",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"7956",nom:"BGD EL HAJEB",reseau:"RMA AGENTS",ville:"EL HAJEB",commercial:"ISSAM"},
+{code:"5841",nom:"ASSURANCES HMAMI",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"5863",nom:"OUADIE ASSURANCES",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6468",nom:"DREAM ASSURANCE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6451",nom:"OASIS ASSURANCES SARL",reseau:"RMA AGENTS",ville:"ERRACHIDIA",commercial:"ISSAM"},
+{code:"6525",nom:"AL ANSAR ASSURANCES SARL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"4415",nom:"MAROC ASSURANCE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7876",nom:"BGD FES",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"7812",nom:"BGD KALAAT M'GOUNA",reseau:"RMA AGENTS",ville:"KALAAT M'GOUNA",commercial:"ISSAM"},
+{code:"6577",nom:"STE NAHJASSUR SARL",reseau:"RMA AGENTS",ville:"EL JADIDA",commercial:"ISSAM"},
+{code:"5886",nom:"PACKASSUR",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7931",nom:"BGD RCI",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"HICHAM"},
+{code:"5180",nom:"ASSUR - AL WATA-ESS SARL",reseau:"RMA AGENTS",ville:"ESSAOUIRA",commercial:"ISSAM"},
+{code:"7952",nom:"BGD DEROUA",reseau:"RMA AGENTS",ville:"DEROUA",commercial:"ISSAM"},
+{code:"5883",nom:"ASSURANCES BENKHALDOUN",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"7954",nom:"BGD AUTO HALL KENITRA",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"6513",nom:"ASSURANCES OUED SOUS",reseau:"RMA AGENTS",ville:"AIT MELLOUL",commercial:"ISSAM"},
+{code:"6576",nom:"ASSURANCE BOUZAGHRANE",reseau:"RMA AGENTS",ville:"AIT AOURIR",commercial:"ISSAM"},
+{code:"7870",nom:"EL BOUHTOURI ASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7784",nom:"BGD MARRAKECH AUTO HALL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"5864",nom:"CONFORT ASSURANCES MIDELT",reseau:"RMA AGENTS",ville:"MIDELT",commercial:"ISSAM"},
+{code:"6533",nom:"ASSURANCES LES PORTES DE MARRAKECH SARL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6649",nom:"PREVALIS ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7921",nom:"BGD DOCKASSUR",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7901",nom:"BGD MARRAKECH HIVERNAGE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7910",nom:"BGD MARRAKECH HIVERNAGE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7816",nom:"BGD AIT KAMRA",reseau:"RMA AGENTS",ville:"AL HOCEIMA",commercial:"ISSAM"},
+{code:"7774",nom:"BGD SEFROU",reseau:"RMA AGENTS",ville:"SEFROU",commercial:"ISSAM"},
+{code:"5900",nom:"ASSURANCES FILALI",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"7919",nom:"BGD AGADIR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"5740",nom:"ASSURAMA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7088",nom:"B.G.D DE MARRAKECH I",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6601",nom:"ASSURANCES KHOLTI",reseau:"RMA AGENTS",ville:"OUAZZANE",commercial:"ISSAM"},
+{code:"8053",nom:"BGD SIDI ISMAEL",reseau:"RMA AGENTS",ville:"SIDI ISMAEL",commercial:"ISSAM"},
+{code:"5862",nom:"BMCE ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8048",nom:"BGD AOULOUZ",reseau:"RMA AGENTS",ville:"AOULOUZ",commercial:"ISSAM"},
+{code:"7420",nom:"BGD RMA -SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7077",nom:"BGD RABAT PRODUCTION",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7970",nom:"BGD FS LALLA YAKOUT",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7964",nom:"BGD FS SALE",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6452",nom:"ASSIF ASSURANCES ET CONSEILS",reseau:"RMA AGENTS",ville:"SAFI",commercial:"ISSAM"},
+{code:"7794",nom:"BGD OUJDA III",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"4007",nom:"AL WATANYA",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7995",nom:"BGD CASA BOURGOGNE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7958",nom:"BGD FS AGADIR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"8017",nom:"BGD AIN HARROUDA",reseau:"RMA AGENTS",ville:"AIN HARROUDA",commercial:"ISSAM"},
+{code:"6639",nom:"SAWAB ASSURANCE",reseau:"RMA AGENTS",ville:"GUELMIM",commercial:"ISSAM"},
+{code:"7894",nom:"BGD AIN AOUDA",reseau:"RMA AGENTS",ville:"AIN AOUDA/TEMARA",commercial:"ISSAM"},
+{code:"6453",nom:"KOUBI-ASSUR SARL AU",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"6652",nom:"LES ASSURANCES AFINDI S2A SARL",reseau:"RMA AGENTS",ville:"EL JADIDA",commercial:"ISSAM"},
+{code:"6614",nom:"STE RANAT ASSURANCE-CONSEIL",reseau:"RMA AGENTS",ville:"TADART-GUERCIF",commercial:"ISSAM"},
+{code:"7814",nom:"BGD DEROUA",reseau:"RMA AGENTS",ville:"DEROUA",commercial:"ISSAM"},
+{code:"6559",nom:"RAK ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7779",nom:"BGD TIZNIT",reseau:"RMA AGENTS",ville:"TIZNIT",commercial:"ISSAM"},
+{code:"7413",nom:"BGD RMA -SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7918",nom:"BGD BIOUGRA",reseau:"RMA AGENTS",ville:"BGD BIOUGRA",commercial:"ISSAM"},
+{code:"6494",nom:"VILLASUR SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6516",nom:"ASSURANCE MOUHSSINE ASSUR SARLAU",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5140",nom:"JADASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5820",nom:"ASSURANCES MOHAMMED BENNIS",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7084",nom:"BGD FES",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"8025",nom:"BGD BUGSHAN",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"4403",nom:"ASSURANCES NOUVELLES DE RABAT / ASSUNOR",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6633",nom:"YARASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7985",nom:"BGD ERFOUD",reseau:"RMA AGENTS",ville:"ERFOUD",commercial:"ISSAM"},
+{code:"6524",nom:"ASSURANCES EL GUARMAI SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6561",nom:"ASSURANCES AL HOCEIMA",reseau:"RMA AGENTS",ville:"AL HOUCEIMA",commercial:"ISSAM"},
+{code:"5877",nom:"OMEGA CONSEIL ASSURANCE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6380",nom:"TANGER ASSURANCES CONSEIL",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7412",nom:"BGD RMA -SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6520",nom:"ASSURANCE AL HAMOUTI SARL",reseau:"RMA AGENTS",ville:"BNI NSAR",commercial:"ISSAM"},
+{code:"5700",nom:"ASSURANCES ATTAAOUNE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5830",nom:"ASSURANCES GIRS",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8045",nom:"BGD C AGADIR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"8043",nom:"BGD C CASA SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7994",nom:"BGD CASA SALAMA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7776",nom:"BGD AUTO HALL SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7920",nom:"BGD SIEGE RMA Assistance",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7937",nom:"BGD EL GARA",reseau:"RMA AGENTS",ville:"EL GARA",commercial:"ISSAM"},
+{code:"5170",nom:"SAFWA ASSURANCES SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6608",nom:"SEBKI ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7071",nom:"B.G.D DE KHOURIBGA",reseau:"RMA AGENTS",ville:"KHOURIBGA",commercial:"ISSAM"},
+{code:"6488",nom:"ASSURANCES BELKHEIRI SARL",reseau:"RMA AGENTS",ville:"SIDI YAHYA AL GHARB",commercial:"ISSAM"},
+{code:"7760",nom:"BGD SAFI",reseau:"RMA AGENTS",ville:"SAFI",commercial:"ISSAM"},
+{code:"7074",nom:"BGD OUJDA",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"6463",nom:"ASSURANCES EL ARCHI",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5760",nom:"ASSURANCES ALAMI",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6493",nom:"ASSURANCE OSCAR SARL",reseau:"RMA AGENTS",ville:"EL JADIDA",commercial:"ISSAM"},
+{code:"5851",nom:"CABINET D'ASSURANCE ET D'ASSISTANCE SIDKI (CAAS)",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"7969",nom:"BGD KIA MARRAKECH",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6566",nom:"NOURASSUR SARL AU",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6594",nom:"ASSURANCE BOUTADGHART",reseau:"RMA AGENTS",ville:"OUARZAZATE",commercial:"ISSAM"},
+{code:"4421",nom:"SECURANCE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6618",nom:"ELMAZGHI ASSURANCES",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"5190",nom:"ASSURANCES ZOHOUR",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"8018",nom:"BGD KASBA TADLA",reseau:"RMA AGENTS",ville:"KASBA TADLA",commercial:"ISSAM"},
+{code:"7821",nom:"BGD TINGHIR",reseau:"RMA AGENTS",ville:"TINGHIR",commercial:"ISSAM"},
+{code:"8007",nom:"BGD MEDIOUNA",reseau:"RMA AGENTS",ville:"MEDIOUNA",commercial:"ISSAM"},
+{code:"6551",nom:"SOCIETE AL HIKMA ASSURANCE SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5100",nom:"ASSURANCES CHETTO",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6615",nom:"COIN DE L'ASSURANCE",reseau:"RMA AGENTS",ville:"SETTAT",commercial:"ISSAM"},
+{code:"6620",nom:"GROUPE ASSURANCES MOSTAINE",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7781",nom:"BGD OUARZAZATE",reseau:"RMA AGENTS",ville:"OUARZAZATE",commercial:"ISSAM"},
+{code:"7416",nom:"BGD RMA -SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5887",nom:"ASSURANCES LA FRATERNITE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8047",nom:"BGD TASSOULTANTE",reseau:"RMA AGENTS",ville:"TASSOULTANTE",commercial:"ISSAM"},
+{code:"6538",nom:"MAYAR ASSURANCES SARL",reseau:"RMA AGENTS",ville:"DCHEIRA",commercial:"ISSAM"},
+{code:"6617",nom:"ASSURANCE RAZZOUKI",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6473",nom:"ASSURANCES L'ENGAGEMENT",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7979",nom:"BGD DAKHLA",reseau:"RMA AGENTS",ville:"DAKHLA",commercial:"ISSAM"},
+{code:"7997",nom:"BGD Lead CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5210",nom:"TAAMIN'COM",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6588",nom:"ASSURANCE OUSSOU",reseau:"RMA AGENTS",ville:"RISSANI",commercial:"ISSAM"},
+{code:"8041",nom:"BGD OUJDA",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"8022",nom:"BGD BEN AHMED",reseau:"RMA AGENTS",ville:"BEN AHMED",commercial:"ISSAM"},
+{code:"6602",nom:"PERFECT ASSUR SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5230",nom:"ASSURANCES BOUAROUROU",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"7951",nom:"BGD CASA C",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6476",nom:"BOUMOUS ASSURANCE",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6290",nom:"ASSURANCES HERRADI",reseau:"RMA AGENTS",ville:"SETTAT",commercial:"ISSAM"},
+{code:"7924",nom:"BGD SOCOMA",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6454",nom:"BALAFREJ ASSURANCES SARL",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"7808",nom:"BGD BETTANA",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6360",nom:"AZROU ASSURANCES CONSEILS",reseau:"RMA AGENTS",ville:"AZROU",commercial:"ISSAM"},
+{code:"7401",nom:"M. TRAIBIZ ABDEALI",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6647",nom:"Family assurance",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"5997",nom:"ASSUREMENT",reseau:"RMA AGENTS",ville:"MOHAMMEDIA",commercial:"ISSAM"},
+{code:"5885",nom:"RAFFALI ASSURANCES",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6636",nom:"ASSURANCES ANNASR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6573",nom:"ASSURANCES CHINI",reseau:"RMA AGENTS",ville:"OUAZZANE",commercial:"ISSAM"},
+{code:"7965",nom:"BGD FS ASIEGH SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6584",nom:"PROTECT ASSURANCES",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6479",nom:"COFASSUR SARL AU",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7947",nom:"BGD KSAR EL KEBIR",reseau:"RMA AGENTS",ville:"KSAR EL KEBIR",commercial:"ISSAM"},
+{code:"5240",nom:"AL HARHOURA ASSURANCE SARL",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7801",nom:"BGD BIOUGRA",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6535",nom:"VITA ASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6659",nom:"BALAFREJ ASSURANCES SARL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7992",nom:"BGD AGADIR hay salam",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6626",nom:"ASSURANCES ZOUMI",reseau:"RMA AGENTS",ville:"ZOUMI-OUEZZANE",commercial:"ISSAM"},
+{code:"6541",nom:"ATTAOUKIL ASSURANCES SARL",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7980",nom:"BGD AUTOHALL MEKNES",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"6549",nom:"ASSURANCES BOUZID",reseau:"RMA AGENTS",ville:"TAOUNATE",commercial:"ISSAM"},
+{code:"5842",nom:"ASSURANCES OUMKALTOUM BENNOUNA",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"6552",nom:"CABINET BOUASSAB FRERES SARL",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6461",nom:"ASSURANCES TROISIEME MILLENAIRE SARL",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6462",nom:"ASSURANCE RIAH SARL",reseau:"RMA AGENTS",ville:"BERRECHID",commercial:"ISSAM"},
+{code:"7872",nom:"BGD FARKHANA",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"6539",nom:"ASSURANCES BELEBHIR SARL",reseau:"RMA AGENTS",ville:"MARTIL",commercial:"ISSAM"},
+{code:"8012",nom:"BGD DEMNATE",reseau:"RMA AGENTS",ville:"DEMNATE",commercial:"ISSAM"},
+{code:"6430",nom:"MEHDIA ASSURANCES",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"6570",nom:"TAAMINAT EDDAMINE",reseau:"RMA AGENTS",ville:"TIFELT",commercial:"ISSAM"},
+{code:"7098",nom:"B.G.D D'AIT-MELLOUL",reseau:"RMA AGENTS",ville:"AIT MELLOUL",commercial:"ISSAM"},
+{code:"7092",nom:"BGD CASA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8031",nom:"BGD TINEJDAD",reseau:"RMA AGENTS",ville:"TINEJDAD",commercial:"ISSAM"},
+{code:"7778",nom:"BGD FES (SALAMA)",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6496",nom:"BOUAGLOU ASSURANCE SARL",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"7990",nom:"BGD BIR JDID",reseau:"RMA AGENTS",ville:"BIR JDID",commercial:"ISSAM"},
+{code:"6545",nom:"CABINET DES ASSURANCES ET EXPERTISE (UNAE)",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"8042",nom:"BGD C RABAT",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"8023",nom:"BGD ZEMAMRA",reseau:"RMA AGENTS",ville:"ZEMAMRA",commercial:"ISSAM"},
+{code:"5869",nom:"POINT ASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6645",nom:"MOUZA ASSURANCE S.A.R.L",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7410",nom:"AFFAIRES DIRECTES SUIVIES PAR LE COURTAGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7983",nom:"BGD AUTOHALL TANGER",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7805",nom:"BGD HARBILE",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7770",nom:"BGD AUTOHALL TETOUAN",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"7957",nom:"BGD MARRAKECH",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6612",nom:"ALAMAL ZAROILI",reseau:"RMA AGENTS",ville:"BEN TAIB-DRIOUCH",commercial:"ISSAM"},
+{code:"5879",nom:"LE BASTION",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"7807",nom:"SALE TABRIQUET",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"7076",nom:"B.G.D D'ESSAOUIRA",reseau:"RMA AGENTS",ville:"ESSAOUIRA",commercial:"ISSAM"},
+{code:"6180",nom:"ASSURANCES BENABDALLAH FES SARL",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"8015",nom:"BGD AOURIR",reseau:"RMA AGENTS",ville:"AOURIR",commercial:"ISSAM"},
+{code:"6482",nom:"ASSURANCE KARMOUCHI SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8009",nom:"BGD OULED AYAD",reseau:"RMA AGENTS",ville:"OULAD AYAD",commercial:"ISSAM"},
+{code:"6495",nom:"RIHAM ASSURANCE",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6590",nom:"ASSURANCES MBM",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7075",nom:"B.G.D DE KENITRA",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"6583",nom:"EL GHAZAOUATE ASSURANCES",reseau:"RMA AGENTS",ville:"BOUMIA",commercial:"ISSAM"},
+{code:"7800",nom:"BGD ER RICH",reseau:"RMA AGENTS",ville:"ER-RICH",commercial:"ISSAM"},
+{code:"6521",nom:"MAZI ASSURANCES SARL AU",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"8050",nom:"BGD IMINITANOUT",reseau:"RMA AGENTS",ville:"IMINTANOUTE",commercial:"ISSAM"},
+{code:"4413",nom:"ASSURANCES BERRYANE",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6638",nom:"ASSURANCE BELAKRY",reseau:"RMA AGENTS",ville:"YOUSSOUFIA",commercial:"ISSAM"},
+{code:"7955",nom:"BGD SELOUANE",reseau:"RMA AGENTS",ville:"SELOUANE",commercial:"ISSAM"},
+{code:"7991",nom:"BGD DEROUA",reseau:"RMA AGENTS",ville:"DEROUA",commercial:"ISSAM"},
+{code:"4440",nom:"CABINET D'ASSURANCES HADJ MOHAMED AOUROUD",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6190",nom:"ASSURANCES BENCHEMSI & SAIARH",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"5998",nom:"TARIK AL KHAIR",reseau:"RMA AGENTS",ville:"SAFI",commercial:"ISSAM"},
+{code:"6628",nom:"ASSURANCE DAR DMANA",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7087",nom:"B.G.D D'AGADIR II",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"6160",nom:"ASSURANCES BEN KLILOU",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"5600",nom:"ASSURANCES LES BENEDICTION",reseau:"RMA AGENTS",ville:"MOHAMMEDIA",commercial:"ISSAM"},
+{code:"6469",nom:"ARRAKHAE ASSURANCES SARL",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"7866",nom:"BGD AUTOHALL OUJDA",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"7791",nom:"BGD ZAIO",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"7948",nom:"BGD KIA",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6340",nom:"ASSURANCES AFIAC REGRAGUI",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"5970",nom:"IZIKI ASSUR",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7889",nom:"BGD MARRAKECH",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"8006",nom:"BGD LAAOUNATE",reseau:"RMA AGENTS",ville:"LAAOUNATE",commercial:"ISSAM"},
+{code:"7822",nom:"BGD BOUARFA",reseau:"RMA AGENTS",ville:"BOUARFA",commercial:"ISSAM"},
+{code:"6489",nom:"ASSURANCE ASSIHAM",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"8032",nom:"BGD ES-SEMARA",reseau:"RMA AGENTS",ville:"ES-SEMARA",commercial:"ISSAM"},
+{code:"5880",nom:"FIKRI MALAK ASSURANCES",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6644",nom:"BGD MABELLA",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6578",nom:"ASSURANCES FETOUAKI SARL*",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6518",nom:"MOBILE ASSURANCES SARL",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"8021",nom:"BGD AIN TAOUJDATE",reseau:"RMA AGENTS",ville:"AIN TAOUJTATE",commercial:"ISSAM"},
+{code:"5996",nom:"ASSURANCES FOUGHAL DOUZI",reseau:"RMA AGENTS",ville:"BERKANE",commercial:"ISSAM"},
+{code:"7913",nom:"BGD AUTO HALL RABAT",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7879",nom:"ASSIF ASSURANCES ET CONSEILS",reseau:"RMA AGENTS",ville:"SAFI",commercial:"ISSAM"},
+{code:"6527",nom:"VENUS ASSURANCES SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6492",nom:"ASSURANCES SIDI BENNOUR SARL",reseau:"RMA AGENTS",ville:"SIDI BENNOUR",commercial:"ISSAM"},
+{code:"7932",nom:"BGD auto hall Safi",reseau:"RMA AGENTS",ville:"SAFI",commercial:"ISSAM"},
+{code:"4418",nom:"ASSURANCES SABAH SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6648",nom:"HAFIDA ASSURANCES SARL",reseau:"RMA AGENTS",ville:"BEN GUERIR",commercial:"ISSAM"},
+{code:"6589",nom:"PROXY ASSURANCES",reseau:"RMA AGENTS",ville:"KHENIFRA",commercial:"ISSAM"},
+{code:"7796",nom:"BGD SKHIRAT",reseau:"RMA AGENTS",ville:"SKHIRAT",commercial:"ISSAM"},
+{code:"5866",nom:"AMCHACHTI ASSURANCES",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6464",nom:"ASSURANCES AHMED GOUDAN",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"7982",nom:"BGD HAD SOUALEM",reseau:"RMA AGENTS",ville:"HAD SOUALEM",commercial:"ISSAM"},
+{code:"6483",nom:"MODERNE ASSURANCE SARL",reseau:"RMA AGENTS",ville:"TEMARA",commercial:"ISSAM"},
+{code:"7782",nom:"BGD AUTOHALL SALE",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6491",nom:"ASSURANCE EL HSISSEN SARL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7818",nom:"BGD FES DEKRA",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"6560",nom:"ASSURANCES ABOUAB DAR BOUAZZA SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6575",nom:"ASSURANCES ELKIRAM",reseau:"RMA AGENTS",ville:"EL ATTAOUIA",commercial:"ISSAM"},
+{code:"7804",nom:"BGD Espace Moto",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7926",nom:"BGD CHEMAOU",reseau:"RMA AGENTS",ville:"SALE",commercial:"ISSAM"},
+{code:"6581",nom:"STE ASSURANCES TALIOUINE SARL",reseau:"RMA AGENTS",ville:"TALIOUINE",commercial:"ISSAM"},
+{code:"8020",nom:"BGD AROUI",reseau:"RMA AGENTS",ville:"AROUI",commercial:"ISSAM"},
+{code:"6526",nom:"SUR ASSUR SARL",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"6629",nom:"TOUIL ASSURANCES",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"5838",nom:"ASSURANCE C.Q.RISK",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"6624",nom:"ASSURANCES TASNIM",reseau:"RMA AGENTS",ville:"MIDAR",commercial:"ISSAM"},
+{code:"6604",nom:"ENERGIC CONSEIL SAMAH",reseau:"RMA AGENTS",ville:"OUJDA",commercial:"ISSAM"},
+{code:"5872",nom:"FIDELASSUR",reseau:"RMA AGENTS",ville:"EL JADIDA",commercial:"ISSAM"},
+{code:"5950",nom:"ASSURANCES ANAS SARL",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"5882",nom:"ASSURANCES CHARAF",reseau:"RMA AGENTS",ville:"AIT MELLOUL",commercial:"ISSAM"},
+{code:"6586",nom:"GHANANE ASSURANCES",reseau:"RMA AGENTS",ville:"SOUK SEBT",commercial:"ISSAM"},
+{code:"5850",nom:"AGENCE WATANI D'ASSURANCE",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7086",nom:"BGD AGADIR",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"7993",nom:"BGD TAZA",reseau:"RMA AGENTS",ville:"TAZA",commercial:"ISSAM"},
+{code:"5865",nom:"DAMANAT ASSURANCES",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7899",nom:"BGD INEZGANE",reseau:"RMA AGENTS",ville:"INZEGANE",commercial:"ISSAM"},
+{code:"6542",nom:"ASSURANCES 2M SARL",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"6579",nom:"STE VERASSUR",reseau:"RMA AGENTS",ville:"TEMARA",commercial:"ISSAM"},
+{code:"7890",nom:"BGD ECHEMMAIA",reseau:"RMA AGENTS",ville:"ECHEMMAIA",commercial:"ISSAM"},
+{code:"5770",nom:"ASSURANCES M'TALSI HAMID SARL",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"6597",nom:"ASSURANCE MOKRIM",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7802",nom:"BGD SOUK LARBAA",reseau:"RMA AGENTS",ville:"SOUK LARBAA",commercial:"ISSAM"},
+{code:"7873",nom:"STE ASSURANCES TALIOUINE SARL",reseau:"RMA AGENTS",ville:"TALIOUINE",commercial:"ISSAM"},
+{code:"5875",nom:"CABINET D'ASSURANCES LA CAPITALE",reseau:"RMA AGENTS",ville:"RABAT",commercial:"ISSAM"},
+{code:"7939",nom:"BGD AUTO HALL TANGER",reseau:"RMA AGENTS",ville:"EL GARA",commercial:"ISSAM"},
+{code:"7792",nom:"BGD CHAOUEN",reseau:"RMA AGENTS",ville:"CHAOUEN",commercial:"ISSAM"},
+{code:"7755",nom:"BGD TANGER VAL FLEURI",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7989",nom:"BGD TAMANSOURTE",reseau:"RMA AGENTS",ville:"TAMANSOURTE",commercial:"ISSAM"},
+{code:"7790",nom:"BGD MISSOUR",reseau:"RMA AGENTS",ville:"MISSOUR",commercial:"ISSAM"},
+{code:"6547",nom:"SOCIETE MOROCCOASSURANCES SARL",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"6546",nom:"HASSANASSUR",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7888",nom:"BGD TANGER VAL FLEURI",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"7927",nom:"BGD TANGER",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6571",nom:"ESBAIY M'HAMMED ASSURANCE SARL",reseau:"RMA AGENTS",ville:"KHEMISSET",commercial:"ISSAM"},
+{code:"7886",nom:"STE ASSURANCES TALIOUINE SARL",reseau:"RMA AGENTS",ville:"TAROUDANT",commercial:"ISSAM"},
+{code:"5890",nom:"ASSURANCES HASKOURI",reseau:"RMA AGENTS",ville:"LARACHE",commercial:"ISSAM"},
+{code:"7938",nom:"BGD AUTO HALL TAROUDANT",reseau:"RMA AGENTS",ville:"TAROUDANT",commercial:"ISSAM"},
+{code:"6530",nom:"SAAD ASSUR SARL",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6619",nom:"ASSURANCES AL YOUSSRE",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"8030",nom:"BGD BOUJDOUR",reseau:"RMA AGENTS",ville:"BOUJDOUR",commercial:"ISSAM"},
+{code:"6497",nom:"CONSEIL PRO ASSURANCE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"5993",nom:"AMIR ASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7393",nom:"BGD TAZA",reseau:"RMA AGENTS",ville:"TAZA",commercial:"ISSAM"},
+{code:"6515",nom:"ASSURANCES EL HAMADI SARL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6460",nom:"ASSURANCES O.M.A",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7915",nom:"BGD AUTOHALL TETOUAN",reseau:"RMA AGENTS",ville:"TETOUAN",commercial:"ISSAM"},
+{code:"6603",nom:"CONSEIL PRO ASSURANCE",reseau:"RMA AGENTS",ville:"BENSLIMANE",commercial:"ISSAM"},
+{code:"7874",nom:"BGD AUTO HALL TIZNIT",reseau:"RMA AGENTS",ville:"TIZNIT",commercial:"ISSAM"},
+{code:"7895",nom:"BGD YOUSSOUFIA",reseau:"RMA AGENTS",ville:"YOUSSOUFIA",commercial:"ISSAM"},
+{code:"8024",nom:"BGD OULAD BERHIL",reseau:"RMA AGENTS",ville:"OULED BERREHIL",commercial:"ISSAM"},
+{code:"6637",nom:"UNION ASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"7880",nom:"ECHAKROUNI ASSURANCES",reseau:"RMA AGENTS",ville:"ZAGORA",commercial:"ISSAM"},
+{code:"5881",nom:"LA REFERENCE D'ASSURANCE",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6587",nom:"EL BOUHTOURI ASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6110",nom:"ASSURANCE BELKHADIR",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"7780",nom:"BGD TAROUDANT",reseau:"RMA AGENTS",ville:"TAROUDANT",commercial:"ISSAM"},
+{code:"5980",nom:"ASSURANCES & CONSEIL TAOUFIK",reseau:"RMA AGENTS",ville:"MEKNES",commercial:"ISSAM"},
+{code:"6630",nom:"ASSURANCE BAZI*",reseau:"RMA AGENTS",ville:"TIZNIT",commercial:"ISSAM"},
+{code:"6605",nom:"LAREAS ASSURANCES",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"5400",nom:"MERASSUR",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6640",nom:"ALTO ASSURANCES",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6456",nom:"ASSURANCES CASA-EST SARL",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6420",nom:"ASSURANCES LYAZIDI & FILS",reseau:"LYAZIDI",ville:"RABAT",commercial:"HICHAM"},
+{code:"6500",nom:"LYAZIDI CONSEIL (IAM)",reseau:"LYAZIDI",ville:"RABAT",commercial:"HICHAM"},
+{code:"6501",nom:"ASSURANCES LYAZIDI SALE",reseau:"LYAZIDI",ville:"SALE",commercial:"HICHAM"},
+{code:"6502",nom:"ASSURANCES LYAZIDI HAY RIAD",reseau:"LYAZIDI",ville:"RABAT",commercial:"HICHAM"},
+{code:"1482",nom:"RDFM SARL",reseau:"RCI",ville:"CASABLANCA",commercial:"HICHAM"},
+{code:"1483",nom:"ASK GRAS SAVOYE MEKNES",reseau:"COURTAGE",ville:"MEKNES",commercial:"ISMAIL"},
+{code:"1484",nom:"ASK GRAS SAVOYE CEMA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1485",nom:"GRAS SAVOYE FES SARL",reseau:"COURTAGE",ville:"FES",commercial:"ISMAIL"},
+{code:"1492",nom:"ASK GS MOHAMMEDIA",reseau:"COURTAGE",ville:"MOHAMMEDIA",commercial:"ISMAIL"},
+{code:"8054",nom:"BGD AOURIR 2",reseau:"RMA AGENTS",ville:"AOURIR",commercial:"ISSAM"},
+{code:"6662",nom:"SOLUDO ASSURANCE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"1481",nom:"GRAS SAVOYE PACK RC RCI",reseau:"RCI",ville:"CASABLANCA",commercial:"HICHAM"},
+{code:"8055",nom:"BGD MARRAKECH HIVERNAGE TACHAOUINE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"7476",nom:"BGD VF OUED ZEM",reseau:"SNTL",ville:"OUED ZEM",commercial:"HICHAM"},
+{code:"101",nom:"SNTL ASSURANCES PECOLL",reseau:"SNTL",ville:"RABAT",commercial:"HICHAM"},
+{code:"1336",nom:"ASSURANCES ARBEA RE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"ISMAIL"},
+{code:"1538",nom:"AFMA MEKNES",reseau:"COURTAGE",ville:"MEKNES",commercial:"AYOUB"},
+{code:"1557",nom:"DRIVE ASSURANCE",reseau:"COURTAGE",ville:"TANGER",commercial:"ISMAIL"},
+{code:"8058",nom:"BGD AGADIR CENTRE",reseau:"RMA AGENTS",ville:"AGADIR",commercial:"ISSAM"},
+{code:"1558",nom:"MJL ASSURANCE",reseau:"COURTAGE",ville:"NON RENSEIGNÉ",commercial:"ISMAIL"},
+{code:"6664",nom:"MAZI ASSURANCE",reseau:"RMA AGENTS",ville:"FES",commercial:"ISSAM"},
+{code:"8060",nom:"BGD BNI BOUAYACH",reseau:"RMA AGENTS",ville:"BNI BOUAYACH",commercial:"ISSAM"},
+{code:"8059",nom:"BGD JORF EL MELHA",reseau:"RMA AGENTS",ville:"JORF EL MALHA",commercial:"ISSAM"},
+{code:"6666",nom:"AGENT SRAGHNA",reseau:"RMA AGENTS",ville:"SRAGHNA",commercial:"ISSAM"},
+{code:"6670",nom:"AMEKRAN ASSURANCE",reseau:"RMA AGENTS",ville:"TANGER",commercial:"ISSAM"},
+{code:"6667",nom:"STE CONSEIL",reseau:"RMA AGENTS",ville:"NON RENSEIGNÉ",commercial:"ISSAM"},
+{code:"6668",nom:"AGENT WESTMED",reseau:"RMA AGENTS",ville:"NADOR",commercial:"ISSAM"},
+{code:"6673",nom:"PROJECT ASSURANCE",reseau:"RMA AGENTS",ville:"KENITRA",commercial:"ISSAM"},
+{code:"8062",nom:"BGD TAHLA",reseau:"RMA AGENTS",ville:"TAHLA",commercial:"ISSAM"},
+{code:"8061",nom:"BGD KHOURIBGA",reseau:"RMA AGENTS",ville:"KHOURIBGA",commercial:"ISSAM"},
+{code:"1469",nom:"DADES COURTAGE",reseau:"COURTAGE",ville:"NON RENSEIGNÉ",commercial:"ISMAIL"},
+{code:"8056",nom:"BGD CASA SIEGE",reseau:"RMA AGENTS",ville:"CASABLANCA",commercial:"ISSAM"},
+{code:"6677",nom:"LA GRANDE STE DES ASSURANCES ET DU CONSEIL",reseau:"RMA AGENTS",ville:"TAOUNATE",commercial:"ISSAM"},
+{code:"6672",nom:"ASSURANCE LOQMANE",reseau:"RMA AGENTS",ville:"MARRAKECH",commercial:"ISSAM"},
+{code:"6665",nom:"GHOUDAIGUI ASSURANCE",reseau:"RMA AGENTS",ville:"BIOUGRA",commercial:"ISSAM"},
+{code:"1565",nom:"RISKALIA COURTAGE & STRATEGIES SARL",reseau:"COURTAGE",ville:"GRAND CASABLANCA",commercial:"AYOUB"},
+{code:"1566",nom:"SANY ASSURANCES",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1563",nom:"UNION FRERES D'ASSURANCE",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1628",nom:"CPA",reseau:"COURTAGE",ville:"CASABLANCA",commercial:"AYOUB"},
+{code:"1568",nom:"ASSURANCE ALJISR",reseau:"COURTAGE",ville:"NADOR",commercial:"AYOUB"}
+];
+
+// ============================================================
+// VARIABLES
+// ============================================================
+let currentUser = '';
+let allDemandes = [];
+let searchResults = [];
+let currentPage = 1;
+const PAGE_SIZE = 15;
+const STORAGE_KEY = 'gco_demandes_v2';
+const FORMULES_KEY = 'gco_formules_saved';
+
+// ============================================================
+// INIT
+// ============================================================
+(function init() {
+    var params = new URLSearchParams(window.location.search);
+    currentUser = params.get('user') || 'HICHAM';
+    document.getElementById('headerUser').textContent = '👤 ' + currentUser;
+    loadDemandes();
+    populateIntermediaires();
+    populateFormules();
+    setupDateInputs();
+})();
+
+// ============================================================
+// INTERMEDIAIRES — HICHAM voit TOUT
+// ============================================================
+function getIntermediairesForUser(user) {
+    var u = user.toUpperCase();
+    if (u === 'HICHAM') {
+        return RESEAU_COMPLET;
+    }
+    return RESEAU_COMPLET.filter(function(r) {
+        return r.commercial.toUpperCase() === u;
+    });
+}
+
+function populateIntermediaires() {
+    var dl = document.getElementById('dlIntermed');
+    dl.innerHTML = '';
+    var list = getIntermediairesForUser(currentUser);
+    list.sort(function(a, b) { return a.code.localeCompare(b.code); });
+    list.forEach(function(r) {
+        var opt = document.createElement('option');
+        opt.value = r.code + ' — ' + r.nom + ' (' + r.ville + ')';
+        dl.appendChild(opt);
+    });
+}
+
+// ============================================================
+// FORMULES — mémoire
+// ============================================================
+function getFormulesSaved() {
+    try { return JSON.parse(localStorage.getItem(FORMULES_KEY)) || []; }
+    catch(e) { return []; }
+}
+
+function saveFormule(val) {
+    if (!val || !val.trim()) return;
+    var list = getFormulesSaved();
+    var v = val.trim();
+    if (list.indexOf(v) === -1) {
+        list.push(v);
+        localStorage.setItem(FORMULES_KEY, JSON.stringify(list));
+        populateFormules();
+    }
+}
+
+function populateFormules() {
+    var dl = document.getElementById('dlFormules');
+    dl.innerHTML = '';
+    var defaults = [
+        'CONTRAT ASSISTANCE POIDS LOURDS','CONTRAT ASSISTANCE VP',
+        'CONTRAT ASSISTANCE VOYAGE','CONTRAT ASSISTANCE HABITATION',
+        'CONTRAT ASSISTANCE RAPATRIEMENT','CONTRAT MULTIRISQUE'
+    ];
+    var saved = getFormulesSaved();
+    var all = defaults.concat(saved);
+    var unique = [];
+    all.forEach(function(f) { if (unique.indexOf(f) === -1) unique.push(f); });
+    unique.sort();
+    unique.forEach(function(f) {
+        var opt = document.createElement('option');
+        opt.value = f;
+        dl.appendChild(opt);
+    });
+}
+
+// ============================================================
+// DATE JJ/MM/AAAA
+// ============================================================
+function setupDateInputs() {
+    var inputs = document.querySelectorAll('input[placeholder="JJ/MM/AAAA"]');
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].addEventListener('input', function() {
+            var v = this.value.replace(/[^\d]/g, '');
+            if (v.length > 8) v = v.substring(0, 8);
+            if (v.length >= 5) v = v.substring(0,2)+'/'+v.substring(2,4)+'/'+v.substring(4);
+            else if (v.length >= 3) v = v.substring(0,2)+'/'+v.substring(2);
+            this.value = v;
+        });
+    }
+}
+
+function parseDateFR(str) {
+    if (!str || str.length < 10) return '';
+    var p = str.split('/');
+    if (p.length !== 3) return '';
+    return p[2]+'-'+p[1]+'-'+p[0];
+}
+
+function formatDateFR(iso) {
+    if (!iso) return '—';
+    try {
+        var d = new Date(iso);
+        if (isNaN(d)) return iso;
+        var dd = String(d.getDate()).padStart(2,'0');
+        var mm = String(d.getMonth()+1).padStart(2,'0');
+        return dd+'/'+mm+'/'+d.getFullYear();
+    } catch(e) { return iso; }
+}
+
+function formatCurrency(val) {
+    var n = parseFloat(val);
+    if (isNaN(n)) return '—';
+    return n.toLocaleString('fr-FR',{minimumFractionDigits:2})+' DH';
+}
+
+// ============================================================
+// STOCKAGE
+// ============================================================
+function loadDemandes() {
+    try { allDemandes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+    catch(e) { allDemandes = []; }
+}
+function saveDemandesToStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allDemandes));
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function switchPage(page, btn) {
+    var pages = document.querySelectorAll('.gco-page');
+    for (var i=0;i<pages.length;i++) pages[i].classList.remove('active');
+    var tabs = document.querySelectorAll('.gco-tab');
+    for (var i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+    if (page==='form') document.getElementById('pageForm').classList.add('active');
+    else { document.getElementById('pageStats').classList.add('active'); doSearch(); }
+    if (btn) btn.classList.add('active');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, type) {
+    type = type || 'success';
+    var t = document.getElementById('toast');
+    t.textContent = (type==='success'?'✅ ':type==='error'?'❌ ':'ℹ️ ') + msg;
+    t.className = 'gco-toast gco-toast-' + type;
+    t.style.display = 'block';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){ t.style.display='none'; }, 3500);
+}
+
+// ============================================================
+// FORMULAIRE
+// ============================================================
+function getFormData() {
+    return {
+        intermediaire: document.getElementById('gco_intermediaire').value.trim(),
+        client: document.getElementById('gco_client').value.trim(),
+        couverture: document.getElementById('gco_couverture').value,
+        immat: document.getElementById('gco_immat').value.trim(),
+        contrat: document.getElementById('gco_contrat').value.trim(),
+        immat_ww: document.getElementById('gco_immat_ww').value.trim(),
+        formule: document.getElementById('gco_formule').value.trim(),
+        prestation: document.getElementById('gco_prestation').value,
+        detail: document.getElementById('gco_detail').value.trim(),
+        autres: document.getElementById('gco_autres').value.trim(),
+        date_souhaitee: document.getElementById('gco_date').value.trim(),
+        nature: document.getElementById('gco_nature').value,
+        cout: document.getElementById('gco_cout').value,
+        ca: document.getElementById('gco_ca').value,
+        taux: document.getElementById('gco_taux').value
+    };
+}
+
+function setFormData(d) {
+    if (!d) return;
+    document.getElementById('gco_id').value = d.id || '';
+    document.getElementById('gco_intermediaire').value = d.intermediaire || '';
+    document.getElementById('gco_client').value = d.client || '';
+    document.getElementById('gco_couverture').value = d.couverture || '';
+    document.getElementById('gco_immat').value = d.immat || '';
+    document.getElementById('gco_contrat').value = d.contrat || '';
+    document.getElementById('gco_immat_ww').value = d.immat_ww || '';
+    document.getElementById('gco_formule').value = d.formule || '';
+    document.getElementById('gco_prestation').value = d.prestation || '';
+    document.getElementById('gco_detail').value = d.detail || '';
+    document.getElementById('gco_autres').value = d.autres || '';
+    document.getElementById('gco_date').value = d.date_souhaitee || '';
+    document.getElementById('gco_nature').value = d.nature || '';
+    document.getElementById('gco_cout').value = d.cout || '';
+    document.getElementById('gco_ca').value = d.ca || '';
+    document.getElementById('gco_taux').value = d.taux || '';
+}
+
+function resetForm() {
+    document.getElementById('formGCO').reset();
+    document.getElementById('gco_id').value = '';
+    toast('Formulaire réinitialisé','info');
+}
+
+// ============================================================
+// ENREGISTRER
+// ============================================================
+function saveDemande() {
+    var data = getFormData();
+    var existingId = document.getElementById('gco_id').value;
+    if (data.formule) saveFormule(data.formule);
+    var demande = {};
+    for (var k in data) demande[k] = data[k];
+    demande.id = existingId || 'GCO-'+Date.now()+'-'+Math.random().toString(36).substr(2,4).toUpperCase();
+    demande.commercial = currentUser;
+    demande.date_saisie = new Date().toISOString();
+
+    if (existingId) {
+        var idx = -1;
+        for (var i=0;i<allDemandes.length;i++) { if(allDemandes[i].id===existingId){idx=i;break;} }
+        if (idx>=0) { for(var k in demande) allDemandes[idx][k]=demande[k]; toast('Demande mise à jour !'); }
+        else { allDemandes.push(demande); toast('Demande enregistrée !'); }
+    } else {
+        allDemandes.push(demande);
+        document.getElementById('gco_id').value = demande.id;
+        toast('Demande enregistrée !');
+    }
+    saveDemandesToStorage();
+}
+
+// ============================================================
+// PDF FICHE
+// ============================================================
+function downloadPDF() {
+    var data = getFormData();
+    data.id = document.getElementById('gco_id').value || 'BROUILLON';
+    data.commercial = currentUser;
+    data.date_saisie_fr = formatDateFR(new Date().toISOString());
+
+    var jsPDF = window.jspdf.jsPDF;
+    var doc = new jsPDF('p','mm','a4');
+    var W = doc.internal.pageSize.width;
+
+    doc.setFillColor(37,99,235);
+    doc.rect(0,0,W,35,'F');
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(16);
+    doc.setFont('helvetica','bold');
+    doc.text('DEMANDE DE GESTE COMMERCIAL',W/2,15,{align:'center'});
+    doc.setFontSize(10);
+    doc.setFont('helvetica','normal');
+    doc.text('Réf: '+data.id+'  |  Commercial: '+data.commercial+'  |  Date: '+data.date_saisie_fr,W/2,25,{align:'center'});
+
+    var rows = [
+        ['Intermédiaire',data.intermediaire||'—'],
+        ['Client / Assuré',data.client||'—'],
+        ['Type couverture',data.couverture||'—'],
+        ['N° Immatriculation',data.immat||'—'],
+        ['N° Contrat',data.contrat||'—'],
+        ['N° Immat. WW',data.immat_ww||'—'],
+        ['Formule Assistance',data.formule||'—'],
+        ['Prestation',data.prestation||'—'],
+        ['Détail demande',data.detail||'—'],
+        ['Autres spécificités',data.autres||'—'],
+        ['Date souhaitée',data.date_souhaitee||'—'],
+        ['Nature geste CO',data.nature||'—'],
+        ['Coût (DH)',data.cout?formatCurrency(data.cout):'—'],
+        ['CA réalisé (DH)',data.ca?formatCurrency(data.ca):'—'],
+        ['Taux Équipement',data.taux?data.taux+' %':'—']
+    ];
+
+    doc.autoTable({
+        startY:40,head:[['Champ','Valeur']],body:rows,
+        styles:{fontSize:10,cellPadding:4},
+        headStyles:{fillColor:[37,99,235],textColor:255,fontStyle:'bold'},
+        columnStyles:{0:{fontStyle:'bold',cellWidth:55}},
+        alternateRowStyles:{fillColor:[245,247,250]}
+    });
+
+    doc.setFontSize(8);doc.setTextColor(150);
+    doc.text('Généré le '+new Date().toLocaleString('fr-FR'),W/2,287,{align:'center'});
+    doc.save('Geste_CO_'+data.id+'.pdf');
+    toast('PDF téléchargé');
+}
+
+// ============================================================
+// EXCEL FICHE
+// ============================================================
+function downloadExcel() {
+    var data = getFormData();
+    data.id = document.getElementById('gco_id').value || 'BROUILLON';
+    data.commercial = currentUser;
+
+    var rows = [
+        ['DEMANDE DE GESTE COMMERCIAL'],
+        ['Référence',data.id],['Commercial',data.commercial],
+        ['Date saisie',formatDateFR(new Date().toISOString())],[],
+        ['Intermédiaire',data.intermediaire],['Client / Assuré',data.client],
+        ['Type couverture',data.couverture],['N° Immatriculation',data.immat],
+        ['N° Contrat',data.contrat],['N° Immat. WW',data.immat_ww],
+        ['Formule Assistance',data.formule],['Prestation',data.prestation],
+        ['Détail demande',data.detail],['Autres spécificités',data.autres],
+        ['Date souhaitée',data.date_souhaitee],['Nature geste CO',data.nature],
+        ['Coût (DH)',parseFloat(data.cout)||0],['CA réalisé (DH)',parseFloat(data.ca)||0],
+        ['Taux Équipement (%)',parseFloat(data.taux)||0]
+    ];
+
+    var ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:25},{wch:50}];
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Geste CO');
+    XLSX.writeFile(wb,'Geste_CO_'+data.id+'.xlsx');
+    toast('Excel téléchargé');
+}
+
+// ============================================================
+// RECHERCHE & STATS
+// ============================================================
+function doSearch() {
+    loadDemandes();
+    var res = allDemandes.slice();
+    var fi = document.getElementById('sf_intermed').value.trim().toLowerCase();
+    var fd1 = parseDateFR(document.getElementById('sf_date1').value);
+    var fd2 = parseDateFR(document.getElementById('sf_date2').value);
+    var fc = document.getElementById('sf_couv').value;
+    var fn = document.getElementById('sf_nature').value;
+    var fp = document.getElementById('sf_prest').value;
+    var fcom = document.getElementById('sf_commercial').value;
+
+    if(fi) res=res.filter(function(d){return (d.intermediaire||'').toLowerCase().indexOf(fi)!==-1;});
+    if(fd1) res=res.filter(function(d){return d.date_saisie>=fd1;});
+    if(fd2) res=res.filter(function(d){return d.date_saisie<=fd2+'T23:59:59';});
+    if(fc) res=res.filter(function(d){return d.couverture===fc;});
+    if(fn) res=res.filter(function(d){return d.nature===fn;});
+    if(fp) res=res.filter(function(d){return d.prestation===fp;});
+    if(fcom) res=res.filter(function(d){return (d.commercial||'').toUpperCase()===fcom.toUpperCase();});
+
+    res.sort(function(a,b){return new Date(b.date_saisie)-new Date(a.date_saisie);});
+    searchResults=res;currentPage=1;
+    updateKPIs(res);updateRepartition(res);renderTable();
+}
+
+function resetSearch() {
+    ['sf_intermed','sf_date1','sf_date2'].forEach(function(id){document.getElementById(id).value='';});
+    ['sf_couv','sf_nature','sf_prest','sf_commercial'].forEach(function(id){document.getElementById(id).value='';});
+    doSearch();
+}
+
+function updateKPIs(data) {
+    var n=data.length;
+    var caT=0,coT=0;
+    data.forEach(function(d){caT+=parseFloat(d.ca)||0;coT+=parseFloat(d.cout)||0;});
+    document.getElementById('kTotal').textContent=n;
+    document.getElementById('kCA').textContent=formatCurrency(caT);
+    document.getElementById('kCout').textContent=n>0?formatCurrency(coT/n):'0 DH';
+    var rep={};
+    data.forEach(function(d){var p=d.prestation||'N/A';rep[p]=(rep[p]||0)+1;});
+    var top='—',max=0;
+    for(var k in rep){if(rep[k]>max){max=rep[k];top=k;}}
+    document.getElementById('kTop').textContent=top;
+}
+
+function updateRepartition(data) {
+    var panel=document.getElementById('repPanel');
+    var container=document.getElementById('repBars');
+    var rep={};
+    data.forEach(function(d){var p=d.prestation||'N/A';rep[p]=(rep[p]||0)+1;});
+    var entries=[];for(var k in rep)entries.push([k,rep[k]]);
+    entries.sort(function(a,b){return b[1]-a[1];});
+    if(entries.length===0){panel.style.display='none';return;}
+    panel.style.display='block';container.innerHTML='';
+    var total=data.length;
+    var colors={'Remorquage':'#2563eb','CONSTAT':'#16a34a','VHR':'#ea580c','REMBOURSEMENT':'#7c3aed','N/A':'#9ca3af'};
+    entries.forEach(function(e){
+        var pct=((e[1]/total)*100).toFixed(1);
+        var color=colors[e[0]]||'#6b7280';
+        container.innerHTML+='<div class="gco-rep-row"><span class="gco-rep-label">'+e[0]+'</span><div class="gco-rep-bar-bg"><div class="gco-rep-bar" style="width:'+pct+'%;background:'+color+';"></div></div><span class="gco-rep-pct">'+pct+'% ('+e[1]+')</span></div>';
+    });
+}
+
+function renderTable() {
+    var tbody=document.getElementById('resBody');
+    var title=document.getElementById('resTitle');
+    var start=(currentPage-1)*PAGE_SIZE;
+    var pageData=searchResults.slice(start,start+PAGE_SIZE);
+    title.textContent='Résultats ('+searchResults.length+' demande'+(searchResults.length>1?'s':'')+')';
+    if(pageData.length===0){
+        tbody.innerHTML='<tr><td colspan="10" class="gco-empty">Aucune demande trouvée</td></tr>';
+        document.getElementById('resPag').innerHTML='';return;
+    }
+    var html='';
+    pageData.forEach(function(d){
+        html+='<tr><td>'+formatDateFR(d.date_saisie)+'</td>';
+        html+='<td title="'+(d.intermediaire||'')+'">'+(d.intermediaire||'—').substring(0,30)+((d.intermediaire||'').length>30?'…':'')+'</td>';
+        html+='<td>'+(d.client||'—')+'</td><td>'+(d.couverture||'—')+'</td>';
+        html+='<td><b>'+(d.prestation||'—')+'</b></td><td>'+(d.nature||'—')+'</td>';
+        html+='<td>'+(d.cout?formatCurrency(d.cout):'—')+'</td>';
+        html+='<td>'+(d.ca?formatCurrency(d.ca):'—')+'</td>';
+        html+='<td>'+(d.taux?d.taux+'%':'—')+'</td>';
+        html+='<td><button class="gco-btn gco-btn-info gco-btn-sm" onclick="viewDemande(\''+d.id+'\')">👁️</button> ';
+        html+='<button class="gco-btn gco-btn-danger gco-btn-sm" onclick="deleteDemande(\''+d.id+'\')">🗑️</button></td></tr>';
+    });
+    tbody.innerHTML=html;renderPagination();
+}
+
+function renderPagination() {
+    var container=document.getElementById('resPag');
+    var totalPages=Math.ceil(searchResults.length/PAGE_SIZE);
+    if(totalPages<=1){container.innerHTML='';return;}
+    var html='<button class="gco-pag-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage===1?'disabled':'')+'>‹</button>';
+    for(var i=1;i<=totalPages;i++){
+        html+='<button class="gco-pag-btn '+(i===currentPage?'active':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+    }
+    html+='<button class="gco-pag-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage===totalPages?'disabled':'')+'>›</button>';
+    container.innerHTML=html;
+}
+
+function goPage(p) {
+    var totalPages=Math.ceil(searchResults.length/PAGE_SIZE);
+    if(p<1||p>totalPages)return;
+    currentPage=p;renderTable();
+}
+
+function viewDemande(id) {
+    var d=null;
+    for(var i=0;i<allDemandes.length;i++){if(allDemandes[i].id===id){d=allDemandes[i];break;}}
+    if(!d)return toast('Introuvable','error');
+    setFormData(d);
+    switchPage('form',document.querySelector('.gco-tab'));
+}
+
+function deleteDemande(id) {
+    if(!confirm('Supprimer cette demande ?'))return;
+    allDemandes=allDemandes.filter(function(d){return d.id!==id;});
+    saveDemandesToStorage();doSearch();toast('Demande supprimée');
+}
+
+// ============================================================
+// EXPORT RESULTATS
+// ============================================================
+function exportResPDF() {
+    if(searchResults.length===0)return toast('Aucune donnée','info');
+    var jsPDF=window.jspdf.jsPDF;
+    var doc=new jsPDF('l','mm','a4');
+    var W=doc.internal.pageSize.width;
+    doc.setFillColor(5,150,105);doc.rect(0,0,W,20,'F');
+    doc.setTextColor(255);doc.setFontSize(12);doc.setFont('helvetica','bold');
+    doc.text('Recherche Gestes CO — '+searchResults.length+' résultat(s)',10,13);
+    doc.setFontSize(9);doc.text(new Date().toLocaleString('fr-FR'),W-10,13,{align:'right'});
+
+    var body=searchResults.map(function(d){return[
+        formatDateFR(d.date_saisie),(d.intermediaire||'').substring(0,35),
+        d.client||'—',d.couverture||'—',d.prestation||'—',d.nature||'—',
+        d.cout?formatCurrency(d.cout):'—',d.ca?formatCurrency(d.ca):'—',
+        d.taux?d.taux+'%':'—',d.commercial||'—'
+    ];});
+
+    doc.autoTable({
+        startY:25,head:[['Date','Intermédiaire','Client','Couv.','Prestation','Nature','Coût','CA','Taux','Commercial']],
+        body:body,styles:{fontSize:7,cellPadding:2},
+        headStyles:{fillColor:[37,99,235],fontSize:7},
+        alternateRowStyles:{fillColor:[245,247,250]}
+    });
+    doc.save('Gestes_CO_recherche.pdf');toast('PDF exporté');
+}
+
+function exportResExcel() {
+    if(searchResults.length===0)return toast('Aucune donnée','info');
+    var headers=['Réf','Date','Commercial','Intermédiaire','Client','Couverture',
+        'Immat.','Contrat','Immat WW','Formule','Prestation','Détail',
+        'Date souhaitée','Autres','Nature','Coût','CA','Taux Éq.'];
+    var rows=searchResults.map(function(d){return[
+        d.id,formatDateFR(d.date_saisie),d.commercial,
+        d.intermediaire,d.client,d.couverture,
+        d.immat,d.contrat,d.immat_ww,d.formule,d.prestation,d.detail,
+        d.date_souhaitee,d.autres,d.nature,
+        parseFloat(d.cout)||0,parseFloat(d.ca)||0,parseFloat(d.taux)||0
+    ];});
+    var ws=XLSX.utils.aoa_to_sheet([headers].concat(rows));
+    var wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Gestes CO');
+    XLSX.writeFile(wb,'Gestes_CO_'+Date.now()+'.xlsx');
+    toast('Excel exporté');
+}
+</script>
+</body>
+</html>
