@@ -1095,6 +1095,7 @@ const FORMULES_KEY = 'gco_formules_saved';
 (function init() {
     var params = new URLSearchParams(window.location.search);
     currentUser = params.get('user') || 'HICHAM';
+    currentUser = currentUser.toUpperCase().split(' ')[0];
     document.getElementById('headerUser').textContent = '👤 ' + currentUser;
     loadDemandes();
     populateIntermediaires();
